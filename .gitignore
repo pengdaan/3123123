@@ -1,0 +1,10 @@
+# 忽略文件夹
+venv/
+__pycache__/
+test/
+reports/
+.vscode/*
+migrations
+# 忽略文件
+*.pyc
+*.log

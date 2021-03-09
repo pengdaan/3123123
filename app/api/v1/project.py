@@ -23,6 +23,8 @@ from app.models.hook import Hook
 from app.models.module import Module
 from app.models.project import Project
 from app.models.tag import Case_Tag
+from app.models.config import Config
+from app.constants import base_sql_config
 from app.validators.project_validator import (
     addProjectForm,
     searchProjectForm,
@@ -63,6 +65,13 @@ def add_project():
         Hook.add_hook(
             projectInfo.id, BASE_CODE_HOOK_TEARDOWN, "API 执行后，后置条件设置", "hook_teardown"
         )
+        Config.add_config(
+            "数据库访问配置",
+            base_sql_config.CONFIG_BODY,
+            base_sql_config.SQL_URL,
+            projectInfo.id,
+            2
+            )
         Case_Tag.add_ca_tag("API用例", projectInfo.id)
         projectInfo.hide("user_detail")
         ProId = projectInfo.id

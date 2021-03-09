@@ -55,5 +55,5 @@ def create_app(config_name=None):
     register_Executor(app)
     register_SocketIO(app)
     register_RabbitMq(app)
-    #register_configure_logging(app)
+    register_configure_logging(app)
     return app
