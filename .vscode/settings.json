@@ -1,0 +1,13 @@
+{
+  "python.linting.enabled": true,
+  // 代码错误提示 flake8
+  "python.linting.flake8Enabled": true,
+  // 运行前先清除输出的内容。
+  "code-runner.clearPreviousOutput": true,
+  // 运行前先保存代码
+  "code-runner.saveFileBeforeRun": true,
+  // 自动格式化代码
+  "editor.formatOnType": true,
+  "editor.formatOnSave": true,
+  "python.pythonPath": "venv/bin/python"
+}

@@ -1,0 +1,47 @@
+Metadata-Version: 1.2
+Name: httprunner
+Version: 2.5.7
+Summary: One-stop solution for HTTP(S) testing.
+Home-page: https://github.com/httprunner/httprunner
+Author: debugtalk
+Author-email: debugtalk@gmail.com
+License: UNKNOWN
+Description: # Luna
+        
+        ###### 项目结构
+        
+        exception 项目拓展
+        core 统一控制器
+        code 状态码管理
+        apiexception 统一异常拦截
+        authInterceptor 登录鉴权
+        conf 基础配置 [免登录鉴权设置，sql 相关设置]
+        
+        ###### 数据库相关
+        
+        1. Flask-Migrate 管理数据库：
+           初始化：flask db init [已初始化，该步骤可以不执行]
+           把表类 import 到 exception.register_extensions 中
+           flask db migrate -m "xxxx" 生成迁移脚本
+           flask db upgrade 更新数据库，有则更新，无则创建
+           执行完成后，需要把 exception.register_extensions 的 import 语句屏蔽
+        
+        ###### 更新包命令行
+        
+        pip freeze > requirements.txt
+        
+        ### 运行
+        
+        flask run
+        
+        ### Docker 运行
+        
+        1. 创建数据库 Luna
+        2. 修改 conf 中 ProductionConfig 方法的数据库连接地址
+        3. 修改 .flaskenv 为 production 运行方式
+        4. 执行: docker build -t luna-system-admin:版本号 .
+        5. 执行 docker tag imagesID harbor.bluemoon.com.cn/luna/luna-system-admin:版本号
+        6. 执行 docker push harbor.bluemoon.com.cn/luna/luna-system-admin:版本号
+        
+Platform: UNKNOWN
+Requires-Python: >=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*
