@@ -14,7 +14,7 @@ import json
 # from app.libs.run import ErrorHandler
 from requests.cookies import RequestsCookieJar
 import requests
-import datetime
+from datetime import datetime
 from app.libs.decimal_encoder import JSONEncoder
 from app.models.report import Report
 from bs4 import BeautifulSoup
@@ -72,6 +72,7 @@ def api_result(summary, in_out):
     """
     单接口测试返回
     """
+    print('312312312',summary)
     result = {}
     out_data = update_in_out(in_out[0])
     result["out_data"] = out_data
@@ -202,7 +203,7 @@ def parse_summary(summary):
 
 
 def get_time_now():
-    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def save_summary(name, summary, project, executor):

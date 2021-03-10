@@ -27,6 +27,8 @@ from .register.database import register_plugin
 from .register.header import register_headers
 from .register.logger import register_configure_logging
 
+from app.register.scheduler import scheduler
+
 
 class Flask(_Flask):
     # 替换Flask中原有的json_encoder方法。
@@ -56,4 +58,7 @@ def create_app(config_name=None):
     register_SocketIO(app)
     register_RabbitMq(app)
     register_configure_logging(app)
+    app.config.from_object(config[config_name])
+    # 启动apscheduler服务
+    scheduler.start()
     return app

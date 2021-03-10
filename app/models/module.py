@@ -20,7 +20,7 @@ class Module(Base):
     __tablename__ = "module"
     id = db.Column(db.Integer, primary_key=True, comment="id")
     name = db.Column(db.String(255), comment="模块名称", nullable=False)
-    func_name = db.Column(db.String(500), comment="场景中使用的函数", nullable=False)
+    func_name = db.Column(db.String(500), comment="场景中使用的函数", nullable=True)
     body = db.Column(db.Text, comment="主体信息", nullable=False)
     api_id = db.Column(db.Integer, db.ForeignKey("api.id", ondelete="CASCADE"))
     sql_config_id = db.Column(

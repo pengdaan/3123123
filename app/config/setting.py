@@ -8,6 +8,7 @@
 @版本        :1.0
 """
 import os
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 
 
 class BaseConfig:
@@ -35,13 +36,21 @@ class DevelopmentConfig(BaseConfig):
         "password": "guest",  # convenience param for password
         "port": 5672,  # amqp server port
     }
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:8852075@127.0.0.1/Luna?charset=utf8&autocommit=true"
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:8852075@127.0.0.1/luna?charset=utf8&autocommit=true"
     #  SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.240.82:31989/luna?charset=utf8&autocommit=true'
     # 测试环境[用于内侧]
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.240.82:31004/Luna?charset=utf8&autocommit=true'
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.240.82:31522/Luna?charset=utf8&autocommit=true'
     CELERY_RESULT_MQTT = "amqp://guest:guest@127.0.0.1:5672"
-
+    # 调度器开关
+    SCHEDULER_API_ENABLED = True
+    # ------持久化位置-------
+    SCHEDULER_JOBSTORES = {
+        'default': SQLAlchemyJobStore(url=SQLALCHEMY_DATABASE_URI)
+    }
+    # 线程池配置
+    SCHEDULER_EXECUTORS = {'default': {'type': 'threadpool', 'max_workers': 10}}
+       
 
 class ProductionConfig(BaseConfig):
     FLASK_PIKA_PARAMS = {

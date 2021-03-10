@@ -7,15 +7,12 @@
 @作者        :Leo
 @版本        :1.0
 """
-import time
-import uuid
 
 from flask import g
 
 from app.libs import run
 from app.libs.auth import auth_jwt
 from app.libs.code import Sucess
-from app.libs.consumer import consumer
 from app.libs.parser import Format, Parse
 from app.libs.redprint import Redprint
 from app.models.case import Case
@@ -25,7 +22,6 @@ from app.models.config import Config
 from app.models.parameter import Parameters
 from app.models.sqlconfig import Sql_Config
 from app.models.user import User
-from app.register.mq import fpika
 from app.register.wsIO import socketio
 from app.validators.case_validator import (
     CaseForm,
@@ -567,41 +563,3 @@ def case_run_by_socket(req):
             namespace="/test",
         )
 
-
-@socketio.on("run_project", namespace="/test")
-def run_project_case_by_socket(req):
-    socketio.emit(
-        "server_response",
-        {"code": "0", "data": "用例正在执行中,请等待结果生成", "msg": "SUCESS"},
-        namespace="/test",
-    )
-    case_list = Case.get_all_case_by_project(req["pro_id"], req["executor"])
-    if len(case_list) <= 0:
-        socketio.emit(
-            "server_response",
-            {"code": "4002", "data": "", "msg": "该项目下不存在用例，请检查"},
-            namespace="/test",
-        )
-    else:
-        t = time.time()
-        queue_name = str(req["executor"] if req["executor"] else "1")
-        case_queue = str(uuid.uuid5(uuid.NAMESPACE_DNS, str(t) + str(queue_name)))
-        queue_body = str({"data": case_list, "executor": int(queue_name)})
-        channel = fpika.channel()
-        # queue 声明持久化: 声明消息队列，消息将在这个队列传递，如不存在，则创建。durable = True 代表消息队列持久化存储，False 非持久化存储
-        channel.queue_declare(queue=case_queue)
-        # exchange 声明持久化: 声明exchange，由exchange指定消息在哪个队列传递，如不存在，则创建.durable = True 代表exchange持久化存储，False 非持久化存储
-        channel.exchange_declare(exchange=case_queue)
-        # 消息持久化: 向队列插入数值 routing_key是队列名。delivery_mode = 2 声明消息在队列中持久化，delivery_mod = 1 消息非持久化
-        channel.basic_publish(exchange="", routing_key=case_queue, body=queue_body)
-        # 将通道还给池
-        # return_broken_channel 在该框架下使用解决队列堵塞问题，详见下方分析
-        fpika.return_broken_channel(channel)
-        fpika.return_channel(channel)
-        socketio.emit(
-            "server_response",
-            {"code": "4003", "data": "", "msg": "用例正在执行中,请等待结果生成"},
-            namespace="/test",
-        )
-        # project传入消费者中消费
-        consumer(case_queue)

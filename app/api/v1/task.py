@@ -12,107 +12,97 @@ from flask import request
 from app.libs.code import Sucess
 
 from app.libs.redprint import Redprint
-from app.libs.tasks_run import task_caseList, task_project
 from app.models.project import Project
 from app.models.report import Report
-from app.models.tasks import ScheduledTasks as Task
+from app.models.task import ScheduledTask as Task
 from app.register.executor import executor
 from app.validators.task_validator import TasksForm
+from app.register.scheduler import scheduler
+from flask import jsonify
+from app.libs import task_config
 
 api = Redprint("task")
 
 
-@api.route("/project/list/<int:page>", methods=["GET"])
-def tasks_project_list(page):
-    """
-    放在task里面[project环境不符合]
-    获取tasks项目列表
-    :return:
-    """
-    res = Project.get_tasks_project(page)
-    return Sucess(data=res)
+# 新增job
+@api.route('/addCron', methods=['post'])
+def add_cron():
+    jobargs = request.get_json()
+    id = jobargs['task_id']
+    trigger_type = jobargs['trigger_type']
+    if trigger_type == "date":
+        run_time = jobargs['run_time']
+        job = scheduler.add_job(func="app.libs.task_config:my_job",
+                                trigger=trigger_type,
+                                run_date=run_time,
+                                replace_existing=True,
+                                coalesce=True,
+                                id=id)
+        print("添加一次性任务成功---[ %s ] " % id)
+    elif trigger_type == 'interval':
+        seconds = jobargs['interval_time']
+        seconds = int(seconds)
+        if seconds <= 0:
+            raise TypeError('请输入大于0的时间间隔！')
+        scheduler.add_job(func="task:my_job",
+                          trigger=trigger_type,
+                          seconds=seconds,
+                          replace_existing=True,
+                          coalesce=True,
+                          id=id)
+    elif trigger_type == "cron":
+        day_of_week = jobargs["run_time"]["day_of_week"]
+        hour = jobargs["run_time"]["hour"]
+        minute = jobargs["run_time"]["minute"]
+        second = jobargs["run_time"]["second"]
+        scheduler.add_job(func="task:my_job", id=id, trigger=trigger_type, day_of_week=day_of_week,
+                          hour=hour, minute=minute,
+                          second=second, replace_existing=True)
+        print("添加周期执行任务成功任务成功---[ %s ] " % id)
+    return Sucess(msg="新增任务成功")
 
+# 暂停
+@api.route('/<task_id>/pause', methods=['GET'])
+def pause_job(task_id):
+    response = {'status': False}
+    try:
+        scheduler.pause_job(task_id)
+        response['status'] = True
+        response['msg'] = "job[%s] pause success!" % task_id
+    except Exception as e:
+        response['msg'] = str(e)
+    return Sucess(response)
 
-@api.route("/list/<int:page>", methods=["GET"])
-def get_project_task_list(page):
-    """[summary]
-    获取项目的task列表
+#启动
+@api.route('/<task_id>/resume',methods=['GET'])
+def start_resume_job(task_id):
+    response = {'status': False}
+    try:
+        scheduler.resume_job(task_id)
+        response['status'] = True
+        response['msg'] = "job[%s] resume success!" % task_id
+    except Exception as e:
+        response['msg'] = str(e)
+    return Sucess(response)
 
-    Args:
-        page ([type]): [description]
+#删除
+@api.route('/<task_id>/remove', methods=['GET'])
+def semove_resume_job(task_id):
+    response = {'status': False}
+    try:
+        scheduler.remove_job(task_id)
+        response['status'] = True
+        response['msg'] = "job[%s] remove success!" % task_id
+    except Exception as e:
+        response['msg'] = str(e)
+    return Sucess(response)
 
-    Returns:
-        [type]: [description]
-    """
-    res = Task.get_project_tasks_list(page, kw=None)
-    return Sucess(data=res)
+#编辑
+#编辑逻辑与新增大致相同，编辑时如果传的task_id 任务表中已存在，那么会直接替换原来的task_id。 
 
+#查job信息，获取的信息包括了job类型和执行时间，可以打印出来结果再根据自己的代码逻辑进行编写
+#查看所有的job信息
+# ret_list = scheduler.get_jobs()
+# # 查看指定的job信息
+# ret_list = scheduler.get_job(jid)
 
-@api.route("/search", methods=["POST"])
-def search_project_task_list():
-    """[summary]
-    搜索查询task
-    Returns:
-        [type]: [description]
-    """
-    taskData = TasksForm().validate_for_api()
-    res = Task.get_project_tasks_list(taskData.page.data, taskData.kw.data)
-    return Sucess(data=res)
-
-
-@api.route("/del/<int:task_id>", methods=["GET"])
-def del_project_task(task_id):
-    """[summary]
-    删除task
-    Args:
-        task_id ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    task_detail = Task.query.filter_by(id=task_id).first_or_404("taskId")
-    task_detail_list = task_detail.tasks_detail.split(",")
-    Task.del_tasks_detail(task_detail_list)
-    Task.del_project_tasks(task_id)
-    return Sucess()
-
-
-@api.route("/detail/<int:task_id>", methods=["GET"])
-def get_task_detail(task_id):
-    """[summary]
-    获取task的执行详情
-    Args:
-        task_id ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    Task.query.filter_by(id=task_id).first_or_404("taskId")
-    task_detail = Task.get_project_tasks_detail(task_id)
-    return Sucess(data=task_detail)
-
-
-@api.route("/project", methods=["GET"])
-def tasks_project():
-    """
-    异步执行计划任务
-    :return:
-    """
-    user_id = request.args.get("user_id")
-    project_id = request.args.get("project_id")
-    case_list = request.args.get("case_list")
-    if project_id:
-        executor.submit(task_project, project_id, user_id)
-    if case_list:
-        this_case_list = case_list.split(",")
-        executor.submit(task_caseList, this_case_list, user_id)
-    return Sucess(msg="Tasks joined successfully, please wait for the result")
-
-
-@api.route("/count", methods=["GET"])
-def tasks_count():
-    """
-    获取task的执行情况
-    """
-    TaskresultList = Report.get_report_count()
-    return Sucess(data=TaskresultList)

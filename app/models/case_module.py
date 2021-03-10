@@ -19,11 +19,10 @@ class CaseModule(Base):
     id = db.Column(db.Integer, primary_key=True, comment="id")
     name = db.Column(db.String(255), comment="模块名称", nullable=False)
     body = db.Column(db.Text, comment="主体信息", nullable=False)
-    func_name = db.Column(db.String(500), comment="场景中使用的函数", nullable=False)
+    func_name = db.Column(db.String(500), comment="场景中使用的函数", nullable=True)
     sql_config_id = db.Column(
         db.Integer, db.ForeignKey("sql_config.id", ondelete="CASCADE")
     )
-    cr_variable_id = db.Column(db.String(255), comment="关键字Id列表", nullable=True)
     other_config_id = db.Column(
         db.Integer, db.ForeignKey("config.id", ondelete="CASCADE")
     )
@@ -40,7 +39,6 @@ class CaseModule(Base):
             "other_config_id",
             "case_id",
             "user_id",
-            "cr_variable_id",
         ]
 
     @staticmethod
