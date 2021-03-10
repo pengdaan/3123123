@@ -8,3 +8,4 @@ migrations
 # 忽略文件
 *.pyc
 *.log
+sips.log

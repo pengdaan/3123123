@@ -201,12 +201,16 @@ def parse_summary(summary):
     return summary
 
 
+def get_time_now():
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
 def save_summary(name, summary, project, executor):
     """保存报告信息"""
     if "status" in summary.keys():
         return
     if name is None:
-        name = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        name = get_time_now()
     for i in summary["details"]:
         i.pop("in_out")
     summary['details'][0]['name'] = name
@@ -214,8 +218,8 @@ def save_summary(name, summary, project, executor):
         pro_id=project,
         summary=json.dumps(summary, cls=JSONEncoder, ensure_ascii=False),
         report_name=name,
-        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        update_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        create_time=get_time_now(),
+        update_time=get_time_now(),
         executor=executor,
     )
 
