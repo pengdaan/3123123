@@ -9,9 +9,9 @@
 """
 
 from sqlalchemy import text
-
 from flask_sqlalchemy import orm
 from app.models.base import Base, db
+from app.libs.times import get_time
 
 
 class PlanDetail(Base):
@@ -34,6 +34,8 @@ class PlanDetail(Base):
             planDetailInfo.case_id = case_id
             planDetailInfo.case_status = case_status
             planDetailInfo.summary = summary
+            planDetailInfo.create_time = get_time()
+            planDetailInfo.update_time = get_time()
             db.session.add(planDetailInfo)
             db.session.flush()
             return planDetailInfo.id

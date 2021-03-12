@@ -562,4 +562,3 @@ def case_run_by_socket(req):
             },
             namespace="/test",
         )
-

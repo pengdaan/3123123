@@ -75,7 +75,7 @@ def report_detail(id):
     start_at_timestamp = summary["time"]["start_at"]
     utc_time_iso_8601_str = datetime.utcfromtimestamp(start_at_timestamp).isoformat()
     summary["time"]["start_datetime"] = utc_time_iso_8601_str
-    summary['details'][0]['name'] = report.report_name
+    summary["details"][0]["name"] = report.report_name
     return render_template("template.html", summary=summary)
 
 

@@ -37,7 +37,7 @@ def luna_auth_token(account, username):
     # token的有效期设置为半年
     token = {
         "iat": t,
-        "exp": t + 15778463, 
+        "exp": t + 15778463,
         "sub": account,
         "username": username,
         "user_id": account,
@@ -47,7 +47,7 @@ def luna_auth_token(account, username):
 
 
 def verify_refresh_token(token):
-     # raise AuthFailed(data="Error token", code=2002)
+    # raise AuthFailed(data="Error token", code=2002)
     try:
         decode_token = jwt.decode(
             token, current_app.config["SECERET_KEY"], algorithm="HS256"

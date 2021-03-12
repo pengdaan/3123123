@@ -155,8 +155,8 @@ class Hook(Base):
     @staticmethod
     def order_by_hook_id(pro_id, fun_name, id):
         taget_sql = "SELECT * FROM hook WHERE pro_id =:pro_id and fun_name=:fun_name and id !=:id"
-        result = db.session.execute(text(taget_sql), {"pro_id": pro_id, "fun_name": fun_name, "id": id}).fetchall()
+        result = db.session.execute(
+            text(taget_sql), {"pro_id": pro_id, "fun_name": fun_name, "id": id}
+        ).fetchall()
         is_activite = serialize_sqlalchemy_obj(result)
         return is_activite
-        
-

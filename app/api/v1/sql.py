@@ -123,7 +123,7 @@ def sql_cconnection():
         res = rows.all(as_dict=True)
         return Sucess(data=res)
     except Exception as e:
-        return Sucess(code=1006, data=str(e))
+        return Sucess(data=str(e))
 
 
 @api.route("/debug/<int:id>", methods=["GET"])
@@ -144,9 +144,9 @@ def sql_debug_cconnection(id):
     )
     if sql.status:
         sql.Close()
-        return Sucess(msg="数据库连接成功")
+        return Sucess()
     else:
-        return Sucess(code=-1, msg=str(sql.error))
+        return Sucess(msg=str(sql.error))
 
 
 @api.route("/search", methods=["POST"])

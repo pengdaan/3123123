@@ -70,8 +70,8 @@ def add_project():
             base_sql_config.CONFIG_BODY,
             base_sql_config.SQL_URL,
             projectInfo.id,
-            2
-            )
+            2,
+        )
         Case_Tag.add_ca_tag("API用例", projectInfo.id)
         projectInfo.hide("user_detail")
         ProId = projectInfo.id

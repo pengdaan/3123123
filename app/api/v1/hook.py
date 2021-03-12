@@ -262,7 +262,11 @@ def debug_hook_coode():
             pro_id=hookData.pro_id.data, fun_name=hookData.fun_name.data
         ).all()
     else:
-        is_exist = Hook.order_by_hook_id(pro_id=hookData.pro_id.data, fun_name=hookData.fun_name.data, id=hookData.id.data)
+        is_exist = Hook.order_by_hook_id(
+            pro_id=hookData.pro_id.data,
+            fun_name=hookData.fun_name.data,
+            id=hookData.id.data,
+        )
     if is_exist:
         return Sucess(code=40001, msg="函数已存在,请重命名！")
     else:
@@ -313,7 +317,7 @@ def del_hook():
         )
     if len(case_is_activite) > 0 or len(api_is_activite) > 0:
         all_is_activite = api_is_activite + case_is_activite
-        return Sucess(code=40002,data=all_is_activite, msg="删除失败,该函数在api或case中正在使用")
+        return Sucess(code=40002, data=all_is_activite, msg="删除失败,该函数在api或case中正在使用")
     else:
         Hook.del_hook(delData.id.data)
         return Sucess()

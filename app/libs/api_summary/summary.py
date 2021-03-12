@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-'''
+"""
 @文件        :summary.py
 @说明        :
 @时间        :2021/03/09 14:25:26
 @作者        :Leo
 @版本        :1.0
-'''
+"""
 from app.libs.httprunner.parser import LazyString
 from flask._compat import text_type
 import re
 import json
+
 # from app.libs.run import ErrorHandler
 from requests.cookies import RequestsCookieJar
 import requests
@@ -72,7 +73,7 @@ def api_result(summary, in_out):
     """
     单接口测试返回
     """
-    print('312312312',summary)
+    print("312312312", summary)
     result = {}
     out_data = update_in_out(in_out[0])
     result["out_data"] = out_data
@@ -214,7 +215,7 @@ def save_summary(name, summary, project, executor):
         name = get_time_now()
     for i in summary["details"]:
         i.pop("in_out")
-    summary['details'][0]['name'] = name
+    summary["details"][0]["name"] = name
     return Report.add_summary(
         pro_id=project,
         summary=json.dumps(summary, cls=JSONEncoder, ensure_ascii=False),
