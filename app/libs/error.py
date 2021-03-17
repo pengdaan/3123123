@@ -20,7 +20,7 @@ class APIException(HTTPException):
     def __init__(self, msg=None, code=None, data=None, headers=None):
         if code:
             self.code = code
-        if data:
+        if data != "":
             self.data = data
         if msg:
             self.msg = msg

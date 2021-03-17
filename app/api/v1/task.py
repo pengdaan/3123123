@@ -13,6 +13,8 @@ import json
 from app.libs.redprint import Redprint
 from app.models.task import ScheduledTask as Task
 from app.register.scheduler import scheduler
+from app.models.report import Report
+from datetime import datetime
 from app.validators.task_validator import TaskForm, addTaskForm, updateTaskForm
 
 
@@ -96,7 +98,7 @@ def add_task():
         )
         Task_info = Task.add_task(name, desc, plan_id, cron_data, 3, robort)
         print("添加周期执行任务成功任务成功---[ %s ] " % id)
-    return Sucess(msg="新增任务成功")
+    return Sucess()
 
 
 @api.route("/update", methods=["POST"])
@@ -145,11 +147,11 @@ def update_task():
             robot=robort,
             status=0,
         )
-        return Sucess(msg="任务更新成功")
+        return Sucess()
 
 
 @api.route("/del/<int:id>", methods=["GET"])
-def del_task():
+def delete_task(id):
     """[summary]
     删除任务，删除前需要先停止任务
     Returns:
@@ -175,18 +177,24 @@ def start_resume_job(id):
     """
     task_info = Task.query.filter_by(id=id).first_or_404("task")
     if task_info.status == 1:
-        return Sucess(msg="任务已启动")
+        return Sucess()
     else:
         if task_info.type == 1:
-            scheduler.add_job(
-                func="app.libs.task_config:run_plan_by_task",
-                trigger="date",
-                run_date=task_info.schedule,
-                replace_existing=True,
-                coalesce=True,
-                id=str(task_info.id),
-                kwargs={"plan_id": task_info.plan_id, "task_id": id},
-            )
+            y = datetime.strptime(task_info.schedule, "%Y-%m-%d %H:%M:%S")
+            z = datetime.now()
+            diff = z - y
+            if diff.days < 0:
+                scheduler.add_job(
+                    func="app.libs.task_config:run_plan_by_task",
+                    trigger="date",
+                    run_date=task_info.schedule,
+                    replace_existing=True,
+                    coalesce=True,
+                    id=str(task_info.id),
+                    kwargs={"plan_id": task_info.plan_id, "task_id": id},
+                )
+            else:
+                return Fail(msg="执行时间必须大于当前时间")
         elif task_info.type == 2:
             scheduler.add_job(
                 func="app.libs.task_config:run_plan_by_task",
@@ -203,7 +211,7 @@ def start_resume_job(id):
                 func="app.libs.task_config:run_plan_by_task",
                 id=str(task_info.id),
                 trigger="cron",
-                day_of_week=int(cron_time["day_of_week"]),
+                day_of_week=cron_time["day_of_week"],
                 hour=int(cron_time["hour"]),
                 minute=int(cron_time["minute"]),
                 second=int(cron_time["second"]),
@@ -219,7 +227,7 @@ def start_resume_job(id):
             robot=task_info.robot,
             status=1,
         )
-        return Sucess(msg="任务已启动")
+        return Sucess()
 
 
 @api.route("/remove/<int:id>", methods=["GET"])
@@ -243,7 +251,7 @@ def stop_resume_job(id):
         robot=task_info.robot,
         status=0,
     )
-    return Sucess(msg="任务已停止")
+    return Sucess()
 
 
 @api.route("/list/<int:plan_id>", methods=["GET"])
@@ -283,3 +291,12 @@ def test_wechat_robort():
         return Sucess()
     else:
         return Fail(msg="发送失败，请检查链接是否正确")
+
+
+@api.route('/count', methods=["GET"])
+def tasks_count():
+    """
+    首页燃尽图展示
+    """
+    TaskresultList = Report.get_report_count()
+    return Sucess(data=TaskresultList)
