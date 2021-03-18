@@ -16,12 +16,13 @@ from app.register.scheduler import scheduler
 from app.models.report import Report
 from datetime import datetime
 from app.validators.task_validator import TaskForm, addTaskForm, updateTaskForm
-
+from app.libs.auth import auth_jwt
 
 api = Redprint("task")
 
 
 @api.route("/add", methods=["POST"])
+@auth_jwt
 def add_task():
     """[summary]
         添加计划任务:
@@ -102,6 +103,7 @@ def add_task():
 
 
 @api.route("/update", methods=["POST"])
+@auth_jwt
 def update_task():
     """[summary]
     更新计划任务,更新前要先停止任务
@@ -151,6 +153,7 @@ def update_task():
 
 
 @api.route("/del/<int:id>", methods=["GET"])
+@auth_jwt
 def delete_task(id):
     """[summary]
     删除任务，删除前需要先停止任务
@@ -166,6 +169,7 @@ def delete_task(id):
 
 
 @api.route("/start/<int:id>", methods=["GET"])
+@auth_jwt
 def start_resume_job(id):
     """[summary]
     启动任务
@@ -231,6 +235,7 @@ def start_resume_job(id):
 
 
 @api.route("/remove/<int:id>", methods=["GET"])
+@auth_jwt
 def stop_resume_job(id):
     """[summary]
     停止任务[直接删除]
@@ -255,6 +260,7 @@ def stop_resume_job(id):
 
 
 @api.route("/list/<int:plan_id>", methods=["GET"])
+@auth_jwt
 def get_plan_stask_list(plan_id):
     """[summary]
     获取计划定时任务列表
@@ -281,19 +287,22 @@ def get_plan_stask_list(plan_id):
     return Sucess(data=plan_task_list)
 
 
-@api.route("robort/test", methods=["POST"])
+@api.route("/robort/test", methods=["POST"])
+@auth_jwt
 def test_wechat_robort():
-    robort = TaskForm().validate_for_api()
-    if robort and "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?" in robort:
+    robort_info = TaskForm().validate_for_api()
+    print('robort_info.robort.data',robort_info.robort.data)
+    if robort_info.robort.data and "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?" in robort_info.robort.data:
         headers = {"Content-Type": "text/plain"}
         data = {"msgtype": "text", "text": {"content": "hello world"}}
-        requests.post(robort, headers=headers, json=data)
+        requests.post(robort_info.robort.data, headers=headers, json=data)
         return Sucess()
     else:
         return Fail(msg="发送失败，请检查链接是否正确")
 
 
 @api.route('/count', methods=["GET"])
+@auth_jwt
 def tasks_count():
     """
     首页燃尽图展示
