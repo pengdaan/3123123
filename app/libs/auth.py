@@ -75,7 +75,7 @@ def auth_jwt(func):
             raise AuthFailed(msg="Token has expired", code=2001)
         else:
             user = verify_refresh_token(token)
-            UserList = User.get_login_user_list()
+            UserList = User.get_login_user_list(status=1)
             if user["user_id"] not in UserList:
                 raise AuthFailed(msg="User does not exist", code=2003)
             else:
