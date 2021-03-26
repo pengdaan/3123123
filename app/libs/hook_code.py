@@ -9,6 +9,7 @@
 """
 
 BASE_CODE_HOOK_SETUP = """
+# -*- encoding: utf-8 -*-
 # write you code
 # 内容调试成功后,请删除调试代码
 

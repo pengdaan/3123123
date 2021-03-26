@@ -47,19 +47,12 @@ class CaseModule(Base):
         db.session.execute(text(taget_sql), {"id": id})
 
     @staticmethod
-    def update_module(id, name, body, other_config_id, sql_config_id):
-        print(
-            "id, name, body, other_config_id, sql_config_id",
-            id,
-            name,
-            body,
-            other_config_id,
-            sql_config_id,
-        )
+    def update_module(id, name, body, other_config_id, func_name, sql_config_id):
         CaseModule.query.filter_by(id=id).update(
             {
                 "name": name,
                 "body": body,
+                "func_name": func_name,
                 "other_config_id": other_config_id,
                 "sql_config_id": sql_config_id,
             }
@@ -67,13 +60,14 @@ class CaseModule(Base):
         return db.session.commit()
 
     @staticmethod
-    def add_api_module(name, body, case_id, user_id, other_config_id, sql_config_id):
+    def add_api_module(name, body, case_id, user_id, other_config_id, func_name, sql_config_id):
         with db.auto_commit():
             CaseModuleInfo = CaseModule()
             CaseModuleInfo.name = name
             CaseModuleInfo.body = body
             CaseModuleInfo.case_id = case_id
             CaseModuleInfo.user_id = user_id
+            CaseModuleInfo.func_name = func_name
             CaseModuleInfo.other_config_id = other_config_id
             CaseModuleInfo.sql_config_id = sql_config_id
             db.session.add(CaseModuleInfo)

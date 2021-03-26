@@ -76,7 +76,7 @@ class User(Base):
         """
         user = User.query.filter_by(username=username).first_or_404("username")
         if not user.check_password(password):
-            raise AuthFailed(msg=" Incorrect account or password", error_code=3002)
+            raise AuthFailed(msg=" Incorrect account or password")
         return {"uid": user.id, "username": user.username}
 
     def check_password(self, raw):

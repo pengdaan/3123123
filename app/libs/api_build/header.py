@@ -11,7 +11,7 @@
 
 def update_api_header(testList):
     # TPDO 更新config中的header到api中
-    print(testList)
+    # print(testList)
     if isinstance(testList, list):
         data = testList[0]
         if "headers" in data["config"]["request"]:
