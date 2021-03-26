@@ -14,7 +14,7 @@ from functools import wraps
 import jwt
 from flask import current_app, g, request
 
-from app.libs.code import AuthFailed
+from app.libs.code import Sucess as AuthFailed
 from app.models.user import User
 
 

@@ -49,7 +49,8 @@ mypy==0.812
 mypy-extensions==0.4.3
 openpyxl==2.4.11
 pathspec==0.8.1
-pika==1.1.0
+# pika==1.1.0
+pika==0.10.0
 pycodestyle==2.6.0
 pycparser==2.20
 pyflakes==2.2.0

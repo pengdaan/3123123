@@ -396,7 +396,3 @@ class Runner(object):
 
         utils.print_info(output)
         return output
-
-    def get_now_run_hook(self):
-        print("这里跪了2", self.now_run_hook)
-        return
