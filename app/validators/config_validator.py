@@ -30,12 +30,6 @@ class addConfigForm(ConfigForm):
     parameters = StringField()
     validate = StringField()
 
-    def validate_pro_id(self, value):
-        if Config.query.filter_by(
-            name=self.name.data, pro_id=value.data, status=1
-        ).first():
-            raise ValidationError(message="该配置已存在")
-
 
 class updateConfigForm(Form):
     id = IntegerField()

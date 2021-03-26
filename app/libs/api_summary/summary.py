@@ -1,20 +1,21 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-'''
+"""
 @文件        :summary.py
 @说明        :
 @时间        :2021/03/09 14:25:26
 @作者        :Leo
 @版本        :1.0
-'''
+"""
 from app.libs.httprunner.parser import LazyString
 from flask._compat import text_type
 import re
 import json
+
 # from app.libs.run import ErrorHandler
 from requests.cookies import RequestsCookieJar
 import requests
-import datetime
+from datetime import datetime
 from app.libs.decimal_encoder import JSONEncoder
 from app.models.report import Report
 from bs4 import BeautifulSoup
@@ -64,7 +65,7 @@ def update_in_out(in_out):
                 add_hook = {key: hook}
                 new_in_out["in"].update(add_hook)
         return new_in_out
-    except Exception as e:
+    except Exception:
         return in_out
 
 
@@ -92,8 +93,8 @@ def api_result(summary, in_out):
                 response = meta_data["response"]
                 result["response"] = {}
                 result["response"]["headers"] = json.loads(response["headers"])
-                print(meta_data["response"]["status_code"])
-                print(meta_data["response"]["reason"])
+                # print(meta_data["response"]["status_code"])
+                # print(meta_data["response"]["reason"])
                 try:
                     result["response"]["body"] = (
                         json.loads(response["body"]) if response["body"] else ""
@@ -101,11 +102,11 @@ def api_result(summary, in_out):
                     result["response"]["status_code"] = meta_data["response"][
                         "status_code"
                     ]
-                except Exception as e:
-                    result["response"]["body"] = meta_data["response"]["reason"]
-                    result["response"]["status_code"] = meta_data["response"][
-                        "status_code"
-                    ]
+                except Exception:
+                    # 用例运行失败
+                    if 'reason' in meta_data['response'] and 'status_code' in meta_data['response']:
+                        result['response']['body'] = meta_data['response']['reason']
+                        result['response']['status_code'] = meta_data['response']['status_code']  
         result["status"] = record["status"]
         result["msg"] = record["attachment"]
     return result
@@ -168,7 +169,7 @@ def parse_summary(summary):
                         record["meta_datas"]["data"][0]["request"][key] = json.loads(
                             value
                         )
-                    except Exception as e:
+                    except Exception:
                         record["meta_datas"]["data"][0]["request"][key] = value
 
             for key, value in record["meta_datas"]["data"][0]["response"].items():
@@ -186,7 +187,7 @@ def parse_summary(summary):
                             key
                         ] = json.loads(value)
 
-                    except Exception as e:
+                    except Exception:
                         record["meta_datas"]["data"][0]["response"][key] = value
 
             if (
@@ -201,21 +202,25 @@ def parse_summary(summary):
     return summary
 
 
+def get_time_now():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
 def save_summary(name, summary, project, executor):
     """保存报告信息"""
     if "status" in summary.keys():
         return
     if name is None:
-        name = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        name = get_time_now()
     for i in summary["details"]:
         i.pop("in_out")
-    summary['details'][0]['name'] = name
+    summary["details"][0]["name"] = name
     return Report.add_summary(
         pro_id=project,
         summary=json.dumps(summary, cls=JSONEncoder, ensure_ascii=False),
         report_name=name,
-        create_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        update_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        create_time=get_time_now(),
+        update_time=get_time_now(),
         executor=executor,
     )
 

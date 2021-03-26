@@ -34,15 +34,27 @@ def add_config():
     :return:
     """
     configData = addConfigForm().validate_for_api()
+    config_info = Config.query.filter_by(
+        name=configData.name.data, pro_id=configData.pro_id.data, status=1
+    ).first()
     config = Format(configData.data, level="config")
     config.parse()
-    Config.add_config(
-        config.name,
-        str(config.testcase),
-        config.base_url,
-        configData.pro_id.data,
-        configData.type.data,
-    )
+    if config_info:
+        Config.update_config(
+            config_info.id,
+            config.name,
+            str(config.testcase),
+            config.base_url,
+            configData.type.data,
+        )
+    else:
+        Config.add_config(
+            config.name,
+            str(config.testcase),
+            config.base_url,
+            configData.pro_id.data,
+            configData.type.data,
+        )
     return Sucess()
 
 

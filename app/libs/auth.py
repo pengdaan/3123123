@@ -14,7 +14,7 @@ from functools import wraps
 import jwt
 from flask import current_app, g, request
 
-from app.libs.code import AuthFailed
+from app.libs.code import Sucess as AuthFailed
 from app.models.user import User
 
 
@@ -37,7 +37,7 @@ def luna_auth_token(account, username):
     # token的有效期设置为半年
     token = {
         "iat": t,
-        "exp": t + 15778463, 
+        "exp": t + 15778463,
         "sub": account,
         "username": username,
         "user_id": account,
@@ -47,7 +47,7 @@ def luna_auth_token(account, username):
 
 
 def verify_refresh_token(token):
-     # raise AuthFailed(data="Error token", code=2002)
+    # raise AuthFailed(data="Error token", code=2002)
     try:
         decode_token = jwt.decode(
             token, current_app.config["SECERET_KEY"], algorithm="HS256"
@@ -75,7 +75,7 @@ def auth_jwt(func):
             raise AuthFailed(msg="Token has expired", code=2001)
         else:
             user = verify_refresh_token(token)
-            UserList = User.get_login_user_list()
+            UserList = User.get_login_user_list(status=1)
             if user["user_id"] not in UserList:
                 raise AuthFailed(msg="User does not exist", code=2003)
             else:

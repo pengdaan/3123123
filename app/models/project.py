@@ -15,6 +15,7 @@ from app.models.base import Base, db
 from app.models.case import Case
 from app.models.case_detail import Case_Detail
 from app.models.user import User
+from app.models.hook import Hook
 
 
 class Project(Base):
@@ -57,6 +58,11 @@ class Project(Base):
 
     @staticmethod
     def del_project(project_id):
+        hook_list = Hook.query.filter_by(pro_id=project_id).all()
+        if hook_list:
+            for i in hook_list:
+                taget_sql = "DELETE FROM hook WHERE id=:hook_id"
+                db.session.execute(text(taget_sql), {"hook_id": i.id})
         taget_sql = "DELETE FROM project WHERE id=:project_id"
         db.session.execute(text(taget_sql), {"project_id": project_id})
 

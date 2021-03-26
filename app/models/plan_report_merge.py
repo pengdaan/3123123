@@ -12,6 +12,7 @@
 from app.models.base import Base, db
 from app.models.plan_detail import PlanDetail
 from app.models.user import User
+from app.libs.times import get_time
 
 
 class planReportMerge(Base):
@@ -30,6 +31,8 @@ class planReportMerge(Base):
             planReportMergeInfo.plan_id = plan_id
             planReportMergeInfo.executor = user_id
             planReportMergeInfo.plan_report_detail = plan_report_detail
+            planReportMergeInfo.create_time = get_time()
+            planReportMerge.update_time = get_time()
             db.session.add(planReportMergeInfo)
             db.session.flush()
             return planReportMergeInfo

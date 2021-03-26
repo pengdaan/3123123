@@ -13,6 +13,7 @@ from sqlalchemy import text
 from app.libs.tools_func import serialize_sqlalchemy_obj
 from app.models.api import Api
 from app.models.base import Base, db
+from app.models.case import Case
 
 
 class Hook(Base):
@@ -82,13 +83,28 @@ class Hook(Base):
             [type]: [description]
         """
         api_ids = []
+        api_result = []
         if api_id:
+            # 判断api中的函数
             taget_sql = "SELECT * FROM module WHERE find_in_set(:func_name, func_name) and api_id =:api_id"
             result = db.session.execute(
                 text(taget_sql), {"func_name": func_name, "api_id": api_id}
             ).fetchall()
-            is_activite = serialize_sqlalchemy_obj(result)
+            if len(result) > 0:
+                is_activite = serialize_sqlalchemy_obj(result)
+                if len(is_activite) > 0:
+                    for i in is_activite:
+                        api_info = Api.query.filter_by(id=i["api_id"]).first()
+                        api_detail = {
+                            "api_id": i["api_id"],
+                            "api_name": api_info.name,
+                            "module_id": i["id"],
+                            "module_name": i["name"]
+                        }
+                        api_result.append(api_detail)
+
         else:
+            # 判断公共函数[project]
             Api_info = Api.query.filter_by(pro_id=pro_id).all()
             if len(Api_info) > 0:
                 for i in Api_info:
@@ -102,7 +118,17 @@ class Hook(Base):
                     text(taget_sql), {"func_name": func_name}
                 ).fetchall()
                 is_activite = serialize_sqlalchemy_obj(result)
-        return is_activite
+                if len(is_activite) > 0:
+                    for i in is_activite:
+                        api_info = Api.query.filter_by(id=i["api_id"]).first()
+                        api_detail = {
+                            "api_id": i["api_id"],
+                            "api_name": api_info.name,
+                            "module_id": i["id"],
+                            "module_name": i["name"]
+                        }
+                        api_result.append(api_detail)            
+        return api_result
 
     @staticmethod
     def _hook_is_activite_by_case(func_name, pro_id):
@@ -121,31 +147,38 @@ class Hook(Base):
         cases = "SELECT id,case_name FROM `case` WHERE pro_id =:pro_id"
         case_result = db.session.execute(text(cases), {"pro_id": pro_id}).fetchall()
         cases_info = serialize_sqlalchemy_obj(case_result)
+        case_func_result = []
         if len(cases_info) > 0:
             for i in cases_info:
                 case_ids.append(i["id"])
         if len(case_ids) > 0:
             pro_all_case = ",".join("%s" % a for a in case_ids)
-        modules = "SELECT id,name FROM `case_module` WHERE case_id in ({}) ".format(
-            pro_all_case
-        )
-        modules_result = db.session.execute(
-            text(modules), {"pro_id": pro_id}
-        ).fetchall()
-        modules_info = serialize_sqlalchemy_obj(modules_result)
-        if len(modules_info) > 0:
-            for i in modules_info:
-                module_ids.append(i["id"])
-        if len(module_ids) > 0:
-            case_all_modules = ",".join("%s" % a for a in module_ids)
-        taget_sql = "SELECT * FROM `case_module` WHERE find_in_set(:func_name, func_name) and id in ({}) ".format(
-            case_all_modules
-        )
-        result = db.session.execute(
-            text(taget_sql), {"func_name": func_name}
-        ).fetchall()
-        is_activite = serialize_sqlalchemy_obj(result)
-        return is_activite
+            modules = "SELECT id,name FROM `case_module` WHERE case_id in ({}) ".format(pro_all_case)
+            modules_result = db.session.execute(
+                text(modules), {"pro_id": pro_id}
+            ).fetchall()
+            modules_info = serialize_sqlalchemy_obj(modules_result)
+            if len(modules_info) > 0:
+                for i in modules_info:
+                    module_ids.append(i["id"])
+                if len(module_ids) > 0:
+                    case_all_modules = ",".join("%s" % a for a in module_ids)
+                    taget_sql = "SELECT * FROM `case_module` WHERE find_in_set(:func_name, func_name) and id in ({}) ".format(case_all_modules)
+                    result = db.session.execute(
+                        text(taget_sql), {"func_name": func_name}
+                    ).fetchall()
+                    is_activite = serialize_sqlalchemy_obj(result)
+                    if len(is_activite) > 0:
+                        for i in is_activite:
+                            case_info = Case.query.filter_by(id=i["case_id"]).first()
+                            data = {
+                                "case_id": i["case_id"],
+                                "case_name": case_info.case_name,
+                                "case_module_id": i["id"],
+                                "case_module_name": i["name"]
+                            }
+                            case_func_result.append(data)
+        return case_func_result
 
     @staticmethod
     def del_hook(id):
@@ -155,8 +188,8 @@ class Hook(Base):
     @staticmethod
     def order_by_hook_id(pro_id, fun_name, id):
         taget_sql = "SELECT * FROM hook WHERE pro_id =:pro_id and fun_name=:fun_name and id !=:id"
-        result = db.session.execute(text(taget_sql), {"pro_id": pro_id, "fun_name": fun_name, "id": id}).fetchall()
+        result = db.session.execute(
+            text(taget_sql), {"pro_id": pro_id, "fun_name": fun_name, "id": id}
+        ).fetchall()
         is_activite = serialize_sqlalchemy_obj(result)
         return is_activite
-        
-

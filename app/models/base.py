@@ -7,9 +7,8 @@
 @作者        :Leo
 @版本        :1.0
 """
-from datetime import datetime
-
 from app.libs.db import db
+from app.libs.times import get_time
 
 
 class Base(db.Model):
@@ -17,13 +16,13 @@ class Base(db.Model):
     status = db.Column(db.Integer, default=1, comment="状态:0,1 默认为1")
     create_time = db.Column(
         db.DateTime,
-        default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        default=get_time(),
         comment="创建时间",
     )
     update_time = db.Column(
         db.DateTime,
-        default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        onupdate=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        default=get_time(),
+        onupdate=get_time(),
         comment="更新时间",
     )
 

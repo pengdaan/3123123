@@ -13,14 +13,14 @@ from werkzeug.exceptions import HTTPException
 
 
 class APIException(HTTPException):
-    code = 500
+    responseCode = 500
     msg = "sorry, we made a mistake !"
     data = ""
 
-    def __init__(self, msg=None, code=None, data=None, headers=None):
-        if code:
-            self.code = code
-        if data:
+    def __init__(self, msg=None, responseCode=None, data=None, headers=None):
+        if responseCode:
+            self.responseCode = responseCode
+        if data != "":
             self.data = data
         if msg:
             self.msg = msg
@@ -29,7 +29,7 @@ class APIException(HTTPException):
     def get_body(self, environ=None):
         body = dict(
             msg=self.msg,
-            code=self.code,
+            responseCode=self.responseCode,
             data=self.data,
             request=request.method + " " + self.get_url_no_param(),
         )

@@ -76,7 +76,7 @@ class User(Base):
         """
         user = User.query.filter_by(username=username).first_or_404("username")
         if not user.check_password(password):
-            raise AuthFailed(msg=" Incorrect account or password", error_code=3002)
+            raise AuthFailed(msg=" Incorrect account or password")
         return {"uid": user.id, "username": user.username}
 
     def check_password(self, raw):
@@ -118,9 +118,16 @@ class User(Base):
                 db.session.commit()
 
     @staticmethod
-    def get_login_user_list():
+    def get_login_user_list(status=None):
         list = []
-        login_user_list = User.query.filter_by(status=1).all()
-        for i in login_user_list:
-            list.append(i.id)
-        return list
+        if status:
+            login_user_list = User.query.filter_by(status=1).all()
+            for i in login_user_list:
+                list.append(i.id)
+            return list
+        else:
+            login_user_list = User.query.all()
+            for i in login_user_list:
+                list.append({"id": i.id, "name": i.username})
+            return list
+

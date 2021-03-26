@@ -12,12 +12,9 @@ import os
 
 from flask import Flask as _Flask
 from flask_cors import CORS
-from jinja2 import Environment
-
 from .libs.decimal_encoder import JSONEncoder
 from app.libs.helper import Helper
 from app.register.executor import register_Executor
-from app.register.mq import register_RabbitMq
 from app.register.wsIO import register_SocketIO
 
 from .config.setting import config
@@ -26,6 +23,8 @@ from .register.blueprints import register_blueprints
 from .register.database import register_plugin
 from .register.header import register_headers
 from .register.logger import register_configure_logging
+
+from app.register.scheduler import scheduler
 
 
 class Flask(_Flask):
@@ -36,7 +35,7 @@ class Flask(_Flask):
 def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv("FLASK_ENV", "development")
-    app = Flask("app", template_folder='templates')
+    app = Flask("app", template_folder="templates")
     # jinja模版中添加convert_timestamp过滤器
     # app.jinja_env = Environment(extensions=["jinja2.ext.loopcontrols"])
     app.jinja_env.filters["convert_timestamp"] = Helper.convert_timestamp
@@ -54,6 +53,8 @@ def create_app(config_name=None):
     TokenFilter(app)
     register_Executor(app)
     register_SocketIO(app)
-    register_RabbitMq(app)
-    #register_configure_logging(app)
+    register_configure_logging(app)
+    # 启动apscheduler服务
+    scheduler.init_app(app)
+    scheduler.start()
     return app

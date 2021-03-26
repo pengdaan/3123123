@@ -21,26 +21,19 @@ def register_plugin(app):
     # 注册Flask-Migrate到app
     migrate.init_app(app)
     # 需要把model类导入，否则创建表失败
-    # from app.models.api import Api
-    # from app.models.case import Case
-    # from app.models.caseDetail import Case_Detail
-    # from app.models.caseModule import CaseModule
-    # from app.models.category import Category
-    # from app.models.config import Config
-    # from app.models.hook import Hook
-    # from app.models.module import Module
-    # from app.models.project import Project
-    # from app.models.sqlConfig import Sql_Config
-    # from app.models.tasks import ScheduledTasks
-    # from app.models.tasksDetail import TasksDetail
-    # from app.models.user import User
-    # from app.models.variables import Variables
-    # from app.models.cr_variables import Cr_Variable
-    # from app.models.cr_case import CrCase
-    # from app.models.cr_case_setup import Cr_Case_Setup
-    # from app.models.cr_case_module_detail import Cr_Case_Module_Detail
-    # from app.models.cr_case_detail import Cr_Case_Setup_Detail
-    # from app.models.Parameters import Parameters
-    # from app.models.plan import Plan
-    # from app.models.planDetail import PlanDetail
-    # from app.models.planReportMerge import planReportMerge
+    from app.models.api import Api
+    from app.models.case import Case
+    from app.models.case_detail import Case_Detail
+    from app.models.case_module import CaseModule
+    from app.models.category import Category
+    from app.models.config import Config
+    from app.models.hook import Hook
+    from app.models.module import Module
+    from app.models.project import Project
+    from app.models.sqlconfig import Sql_Config
+    from app.models.task import ScheduledTask
+    from app.models.user import User
+    from app.models.parameter import Parameters
+    from app.models.plan import Plan
+    from app.models.plan_detail import PlanDetail
+    from app.models.plan_report_merge import planReportMerge

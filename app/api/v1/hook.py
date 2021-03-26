@@ -9,7 +9,7 @@
 """
 
 from app.libs.auth import auth_jwt
-from app.libs.code import Sucess
+from app.libs.code import Sucess, Fail
 from app.libs.redprint import Redprint
 from app.libs.code_run import DebugCode
 from app.models.api import Api
@@ -262,7 +262,11 @@ def debug_hook_coode():
             pro_id=hookData.pro_id.data, fun_name=hookData.fun_name.data
         ).all()
     else:
-        is_exist = Hook.order_by_hook_id(pro_id=hookData.pro_id.data, fun_name=hookData.fun_name.data, id=hookData.id.data)
+        is_exist = Hook.order_by_hook_id(
+            pro_id=hookData.pro_id.data,
+            fun_name=hookData.fun_name.data,
+            id=hookData.id.data,
+        )
     if is_exist:
         return Sucess(code=40001, msg="函数已存在,请重命名！")
     else:
@@ -287,13 +291,13 @@ def debug_hook_coode():
                     debug_code = debug_code + i.code
         debug_code = debug_code + hookData.code.data
         debug = DebugCode(debug_code)
-        print(debug_code)
+        # print(debug_code)
         debug.run()
         return Sucess(data=debug.resp)
 
 
 @api.route("/del", methods=["POST"])
-@auth_jwt
+# @auth_jwt
 def del_hook():
     """
     删除hook
@@ -312,8 +316,10 @@ def del_hook():
             delData.func_name.data, api_id=None, pro_id=delData.pro_id.data
         )
     if len(case_is_activite) > 0 or len(api_is_activite) > 0:
+        print('api_is_activite',api_is_activite)
         all_is_activite = api_is_activite + case_is_activite
-        return Sucess(code=40002,data=all_is_activite, msg="删除失败,该函数在api或case中正在使用")
+        return Fail(data=all_is_activite, msg="删除失败,该函数在api或case中正在使用") 
     else:
+
         Hook.del_hook(delData.id.data)
         return Sucess()

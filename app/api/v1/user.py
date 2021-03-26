@@ -70,7 +70,7 @@ def user_info():
     )
     return jsonify(
         {
-            "code": 201,
+            "responseCode": 2000,
             "data": users,
             "pro_info": {"id": ProInfo.id, "pro_name": ProInfo.project_name},
         }
@@ -86,3 +86,12 @@ def logout():
     uid = g.user
     User.update_user_status(uid, 0, 2)
     return Sucess()
+
+
+@api.route("/list", methods=["GET"])
+def user_list():
+    """
+    用户列表
+    """
+    user_list = User.get_login_user_list()
+    return Sucess(data=user_list)
