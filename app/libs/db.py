@@ -12,7 +12,7 @@ from contextlib import contextmanager
 
 from flask_sqlalchemy import BaseQuery
 from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy
-from app.libs.code import NotFound, Sucess
+from app.libs.code import AuthFailed, NotFound
 
 
 class SQLAlchemy(_SQLAlchemy):
@@ -42,7 +42,7 @@ class Query(BaseQuery):
         rv = self.first()
         if key == "token":
             if not rv:
-                raise Sucess(msg="%s has expired" % key, code=4001)
+                raise AuthFailed(msg="%s has expired" % key, responseCode=2003)
         else:
             if not rv:
                 raise NotFound(msg="%s is not exist" % key)

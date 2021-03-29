@@ -13,7 +13,6 @@ from datetime import datetime
 
 from sqlalchemy import text
 
-from app.libs.code import AuthFailed, NotFound
 from flask_sqlalchemy import orm
 from app.libs.tools_func import serialize_sqlalchemy_obj
 from app.models.base import Base, db

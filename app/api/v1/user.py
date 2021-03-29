@@ -70,7 +70,7 @@ def user_info():
     )
     return jsonify(
         {
-            "code": 201,
+            "responseCode": 2000,
             "data": users,
             "pro_info": {"id": ProInfo.id, "pro_name": ProInfo.project_name},
         }

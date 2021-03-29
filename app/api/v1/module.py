@@ -9,8 +9,7 @@
 """
 
 from flask import g
-from app.libs.code import Sucess
-
+from app.libs.code import Sucess, Fail
 from app.libs.auth import auth_jwt
 from app.libs.func_name import get_func_name
 from app.libs.parser import Format, Parse
@@ -51,7 +50,7 @@ def add_module():
         )
         return Sucess(data=addModule.id)
     else:
-        return Sucess(data=addModule.id, msg="该模块已存在")
+        return Fail(msg="该模块已存在")
 
 
 @api.route("/del/<int:id>", methods=["GET"])
@@ -168,6 +167,7 @@ def copy_api_module():
         moduleData.id.data,
         module_detail.name,
         copy_module_detail.body,
+        copy_module_detail.func_name,
         copy_module_detail.sql_config_id,
     )
     return Sucess()

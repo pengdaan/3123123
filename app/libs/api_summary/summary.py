@@ -93,8 +93,8 @@ def api_result(summary, in_out):
                 response = meta_data["response"]
                 result["response"] = {}
                 result["response"]["headers"] = json.loads(response["headers"])
-                print(meta_data["response"]["status_code"])
-                print(meta_data["response"]["reason"])
+                # print(meta_data["response"]["status_code"])
+                # print(meta_data["response"]["reason"])
                 try:
                     result["response"]["body"] = (
                         json.loads(response["body"]) if response["body"] else ""

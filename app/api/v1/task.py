@@ -83,7 +83,7 @@ def add_task():
         Task_info = Task.add_task(name, desc, plan_id, interval_time, 2, robort)
         seconds = int(interval_time)
         if seconds <= 0:
-            return Fail(code=40001, msg="请输入大于0的时间间隔！")
+            return Fail(msg="请输入大于0的时间间隔！")
     elif trigger_type == "cron":
         day_of_week = task_info.run_time.data["day_of_week"]
         hour = task_info.run_time.data["hour"]
@@ -114,7 +114,7 @@ def update_task():
     id = task_info.task_id.data
     Task_status = Task.query.filter_by(id=id).first_or_404("task")
     if Task_status.status == 1:
-        return Sucess(msg="更新失败,请先停止任务")
+        return Fail(msg="更新失败,请先停止任务")
     else:
         name = task_info.name.data
         desc = task_info.desc.data
@@ -162,7 +162,7 @@ def delete_task(id):
     """
     Task_info = Task.query.filter_by(id=id).first_or_404("task")
     if Task_info.status == 1:
-        return Sucess(msg="停止失败,请先停止任务")
+        return Fail(msg="停止失败,请先停止任务")
     else:
         Task.del_task(id)
         return Sucess()
@@ -198,7 +198,7 @@ def start_resume_job(id):
                     kwargs={"plan_id": task_info.plan_id, "task_id": id},
                 )
             else:
-                return Fail(msg="执行时间必须大于当前时间")
+                return Sucess(msg="执行时间必须大于当前时间")
         elif task_info.type == 2:
             scheduler.add_job(
                 func="app.libs.task_config:run_plan_by_task",
@@ -298,7 +298,7 @@ def test_wechat_robort():
         requests.post(robort_info.robort.data, headers=headers, json=data)
         return Sucess()
     else:
-        return Fail(msg="发送失败，请检查链接是否正确")
+        return Fail(responseCode=2006, msg="发送失败，请检查链接是否正确")
 
 
 @api.route('/count', methods=["GET"])
