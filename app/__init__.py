@@ -15,7 +15,6 @@ from flask_cors import CORS
 from .libs.decimal_encoder import JSONEncoder
 from app.libs.helper import Helper
 from app.register.executor import register_Executor
-from app.register.mq import register_RabbitMq
 from app.register.wsIO import register_SocketIO
 
 from .config.setting import config
@@ -54,7 +53,6 @@ def create_app(config_name=None):
     TokenFilter(app)
     register_Executor(app)
     register_SocketIO(app)
-    register_RabbitMq(app)
     register_configure_logging(app)
     # 启动apscheduler服务
     scheduler.init_app(app)

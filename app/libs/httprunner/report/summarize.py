@@ -2,6 +2,7 @@ import platform
 import re
 
 from flask._compat import text_type
+from flask import g
 
 from app.libs.httprunner import __version__
 from app.libs.httprunner.parser import LazyString
@@ -88,7 +89,7 @@ def get_summary(result):
 
 
 def get_run_hook(records):
-    print("获取执行的hook")
+    # print("获取执行的hook")
     try:
         if len(records) > 0:
             for i in records:
@@ -98,6 +99,8 @@ def get_run_hook(records):
                     if "Traceback" in val:
                         traceback_list.append(idx)
                 attachment_data = attachment_data[max(traceback_list) :]
+                if g.last_var_name:
+                    attachment_data.insert(0, g.last_var_name + "  Error:")
                 traceback_list = []
                 i["attachment"] = attachment_data
                 if len(i["meta_datas"]["end_hook"]) > 0:

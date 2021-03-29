@@ -6,6 +6,7 @@ import collections
 import copy
 import json
 import re
+from flask import g
 
 from app.libs.httprunner import exceptions, loader, logger, utils
 from app.libs.httprunner.compat import basestring, numeric_types, str
@@ -899,7 +900,8 @@ def parse_variables_mapping(variables_mapping):
                 ):
                     # reference variable not parsed
                     continue
-
+            # 当变量的函数报错时，记录最新的报错变量
+            g.last_var_name = var_name
             parsed_value = parse_lazy_data(value, parsed_variables_mapping)
             parsed_variables_mapping[var_name] = parsed_value
 

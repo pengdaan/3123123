@@ -24,27 +24,13 @@ class BaseConfig:
     SESSION_KEY = "app"
     #
     IGNORE_CHECK_LOGIN_URLS = ["^/static", "^/favicon.ico"]
-    # optional pooling params
-    FLASK_PIKA_POOL_PARAMS = {"pool_size": 8, "pool_recycle": 600}
     # 日志路径
     LOG_PATH = ""
 
 
 class DevelopmentConfig(BaseConfig):
-    FLASK_PIKA_PARAMS = {
-        "host": "127.0.0.1",  # amqp.server.com
-        "username": "guest",  # convenience param for username
-        "password": "guest",  # convenience param for password
-        "port": 5672,  # amqp server port
-    }
-    SQLALCHEMY_DATABASE_URI = (
-        "mysql+pymysql://root:8852075@127.0.0.1/luna?charset=utf8&autocommit=true"
-    )
-    #  SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.240.82:31989/luna?charset=utf8&autocommit=true'
-    # 测试环境[用于内侧]
-    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.240.82:31004/Luna?charset=utf8&autocommit=true'
-    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.240.82:31522/Luna?charset=utf8&autocommit=true'
-    CELERY_RESULT_MQTT = "amqp://guest:guest@127.0.0.1:5672"
+    SQLALCHEMY_DATABASE_URI = ("mysql+pymysql://root:8852075@127.0.0.1/luna?charset=utf8&autocommit=true")
+    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.240.82:31989/luna?charset=utf8&autocommit=true'
     # 调度器开关
     SCHEDULER_API_ENABLED = False
     # ------持久化位置-------
@@ -58,14 +44,7 @@ class DevelopmentConfig(BaseConfig):
 
 
 class ProductionConfig(BaseConfig):
-    FLASK_PIKA_PARAMS = {
-        "host": "192.168.240.82",  # amqp.server.com
-        "username": "guest",  # convenience param for username
-        "password": "guest",  # convenience param for password
-        "port": 30457,  # amqp server port
-    }
-    # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:123456@192.168.240.82:31989/luna?charset=utf8&autocommit=true"
-    CELERY_RESULT_MQTT = "amqp://guest:guest@192.168.240.82:30457"
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:123456@192.168.240.82:31989/luna?charset=utf8&autocommit=true"
 
 
 config = {"development": DevelopmentConfig, "production": ProductionConfig}

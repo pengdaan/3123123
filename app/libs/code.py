@@ -14,36 +14,36 @@ from app.libs.error import APIException
 
 
 class parameterException(APIException):
-    code = 401
+    responseCode = 2005
     data = ""
     msg = "invalid parameter"
 
 
 class Sucess(APIException):
-    code = 201
+    responseCode = 2000
     data = ""
     msg = "success"
 
 
 class Fail(APIException):
-    code = 202
+    responseCode = 2004
     data = ""
-    msg = "fail"
+    msg = "success"
 
 
 class ServerError(APIException):
-    code = 500
+    responseCode = 500
     data = ""
     msg = "sorry, we made a mistake !"
 
 
 class NotFound(APIException):
-    code = 404
+    responseCode = 404
     data = ""
     msg = "this resource are not found"
 
 
 class AuthFailed(APIException):
-    code = 201
+    responseCode = 401
     data = ""
     msg = "authorization failed"

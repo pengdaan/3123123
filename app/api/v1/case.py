@@ -23,6 +23,8 @@ from app.models.parameter import Parameters
 from app.models.sqlconfig import Sql_Config
 from app.models.user import User
 from app.register.wsIO import socketio
+from app.libs.func_name import get_func_name
+
 from app.validators.case_validator import (
     CaseForm,
     CaseRunForm,
@@ -248,17 +250,6 @@ def del_case_detail():
     return Sucess()
 
 
-@api.route("/detail/update", methods=["POST"])
-@auth_jwt
-def update_case_detail():
-    """
-    怀疑是已弃用的接口
-    更新case 排序 和module_id
-    :return:
-    """
-    pass
-
-
 @api.route("/detail/add", methods=["POST"])
 @auth_jwt
 def add_case_detail():
@@ -269,12 +260,14 @@ def add_case_detail():
     addData = addCaseDetail().validate_for_api()
     api = Format(addData.case_api.data)
     api.parse()
+    func_name = get_func_name(api.testcase)
     if addData.id.data:
         CaseModule.update_module(
             addData.id.data,
             api.testcase["name"],
             str(api.testcase),
             addData.other_config_id.data,
+            func_name,
             addData.sql_config_id.data,
         )
         CaseDetailInfo = Case_Detail.query.filter_by(
@@ -282,11 +275,6 @@ def add_case_detail():
             module_id=addData.id.data,
             api_id=addData.api_id.data,
         ).first()
-        print(
-            CaseDetailInfo,
-            addData.case_id.data,
-            addData.id.data,
-        )
         res = {
             "case_detail_id": CaseDetailInfo.id,
             "module_id": addData.id.data,
@@ -299,6 +287,7 @@ def add_case_detail():
             addData.case_id.data,
             addData.user_id.data,
             addData.other_config_id.data,
+            func_name,
             addData.sql_config_id.data,
         )
         CaseDetailInfo = Case_Detail.add_case_detail(

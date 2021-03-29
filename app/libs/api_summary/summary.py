@@ -65,7 +65,7 @@ def update_in_out(in_out):
                 add_hook = {key: hook}
                 new_in_out["in"].update(add_hook)
         return new_in_out
-    except Exception as e:
+    except Exception:
         return in_out
 
 
@@ -73,7 +73,6 @@ def api_result(summary, in_out):
     """
     单接口测试返回
     """
-    print("312312312", summary)
     result = {}
     out_data = update_in_out(in_out[0])
     result["out_data"] = out_data
@@ -94,8 +93,8 @@ def api_result(summary, in_out):
                 response = meta_data["response"]
                 result["response"] = {}
                 result["response"]["headers"] = json.loads(response["headers"])
-                print(meta_data["response"]["status_code"])
-                print(meta_data["response"]["reason"])
+                # print(meta_data["response"]["status_code"])
+                # print(meta_data["response"]["reason"])
                 try:
                     result["response"]["body"] = (
                         json.loads(response["body"]) if response["body"] else ""
@@ -103,11 +102,11 @@ def api_result(summary, in_out):
                     result["response"]["status_code"] = meta_data["response"][
                         "status_code"
                     ]
-                except Exception as e:
-                    result["response"]["body"] = meta_data["response"]["reason"]
-                    result["response"]["status_code"] = meta_data["response"][
-                        "status_code"
-                    ]
+                except Exception:
+                    # 用例运行失败
+                    if 'reason' in meta_data['response'] and 'status_code' in meta_data['response']:
+                        result['response']['body'] = meta_data['response']['reason']
+                        result['response']['status_code'] = meta_data['response']['status_code']  
         result["status"] = record["status"]
         result["msg"] = record["attachment"]
     return result
@@ -170,7 +169,7 @@ def parse_summary(summary):
                         record["meta_datas"]["data"][0]["request"][key] = json.loads(
                             value
                         )
-                    except Exception as e:
+                    except Exception:
                         record["meta_datas"]["data"][0]["request"][key] = value
 
             for key, value in record["meta_datas"]["data"][0]["response"].items():
@@ -188,7 +187,7 @@ def parse_summary(summary):
                             key
                         ] = json.loads(value)
 
-                    except Exception as e:
+                    except Exception:
                         record["meta_datas"]["data"][0]["response"][key] = value
 
             if (

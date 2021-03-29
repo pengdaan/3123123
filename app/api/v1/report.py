@@ -160,7 +160,7 @@ def del_report(id):
 @api.route("/suite", methods=["GET"])
 def report_suite_detail():
     report_list = request.args.get("report_ids").split(",")
-    print("this.report_list:", report_list)
+    # print("this.report_list:", report_list)
     for i in report_list:
         report = Report.query.filter_by(id=int(i)).first_or_404("reportId")
         summary = json.loads(report.summary, encoding="utf-8")
