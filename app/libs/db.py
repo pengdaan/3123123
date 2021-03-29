@@ -42,7 +42,7 @@ class Query(BaseQuery):
         rv = self.first()
         if key == "token":
             if not rv:
-                raise AuthFailed(msg="%s has expired" % key)
+                raise AuthFailed(msg="%s has expired" % key, responseCode=2003)
         else:
             if not rv:
                 raise NotFound(msg="%s is not exist" % key)
