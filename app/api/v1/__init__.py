@@ -26,6 +26,7 @@ from app.api.v1 import (
     tag,
     task,
     user,
+    capture
 )
 
 
@@ -51,5 +52,6 @@ def create_blueprint_v1():
     tag.api.register(bp_v1)
     swagger.api.register(bp_v1)
     plan.api.register(bp_v1)
+    capture.api.register(bp_v1)
 
     return bp_v1

@@ -88,10 +88,4 @@ def logout():
     return Sucess()
 
 
-@api.route("/list", methods=["GET"])
-def user_list():
-    """
-    用户列表
-    """
-    user_list = User.get_login_user_list()
-    return Sucess(data=user_list)
+
