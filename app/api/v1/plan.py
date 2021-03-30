@@ -62,7 +62,7 @@ def add_plan_list():
         Plan.update_project_plan(
             PlanData.id.data, PlanData.name.data, PlanData.desc.data
         )
-        return jsonify({"code": 0, "data": {"id": PlanData.id.data}, "msg": "success"})
+        return Sucess(data={"id": PlanData.id.data})
     else:
         PlanInfo = Plan.add_project_plan(
             PlanData.pro_id.data,
