@@ -9,7 +9,7 @@
 """
 
 from flask import request
-from app.libs.code import Sucess
+from app.libs.code import Sucess, Fail
 
 from app.libs.auth import auth_jwt
 from app.libs.parser import Format, Parse
@@ -58,22 +58,6 @@ def add_config():
     return Sucess()
 
 
-@api.route("/get_case/<int:id>", methods=["GET"])
-@auth_jwt
-def get_case_config_list(id):
-    """
-    根据id查询配置下是否有case
-    :param id:
-    :return:
-    """
-    case_list = Case.query.filter_by(config_id=id).all()
-    if case_list:
-        data = case_list
-    else:
-        data = []
-    return Sucess(data=data)
-
-
 @api.route("/del/<int:id>", methods=["GET"])
 @auth_jwt
 def del_config(id):
@@ -82,9 +66,13 @@ def del_config(id):
     :param id:
     :return:
     """
-    Config.query.filter_by(id=id).first_or_404("configId")
-    Config.del_config(id)
-    return Sucess()
+    case_list = Case.query.filter_by(config_id=id).all()
+    if len(case_list) > 0:
+        return Fail(msg="删除失败，该配置已在项目中使用")
+    else:
+        Config.query.filter_by(id=id).first_or_404("configId")
+        Config.del_config(id)
+        return Sucess()
 
 
 @api.route("/detail/<int:id>", methods=["GET"])

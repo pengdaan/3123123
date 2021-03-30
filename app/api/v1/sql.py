@@ -9,7 +9,9 @@
 """
 
 import records
-from app.libs.code import Sucess
+from app.libs.code import Sucess, Fail
+from app.models.module import Module
+from app.models.case_module import CaseModule
 
 from app.libs.auth import auth_jwt
 from app.libs.mysql import MYSQL
@@ -44,9 +46,14 @@ def add_sql_config():
 @api.route("/del/<int:id>", methods=["GET"])
 @auth_jwt
 def del_sql_config(id):
-    SqlConfig.query.filter_by(id=id, status=1).first_or_404("SqlId")
-    SqlConfig.del_sql_config(id)
-    return Sucess()
+    module_list = Module.query.filter_by(sql_config_id=id).all()
+    case_info = CaseModule.query.filter_by(sql_config_id=id).all()
+    if len(module_list) > 0 or len(case_info) > 0:
+        return Fail(msg="删除失败,该配置在项目中已使用")
+    else:
+        SqlConfig.query.filter_by(id=id, status=1).first_or_404("SqlId")
+        SqlConfig.del_sql_config(id)
+        return Sucess()
 
 
 @api.route("/detail/<int:id>", methods=["GET"])
@@ -123,7 +130,12 @@ def sql_cconnection():
         res = rows.all(as_dict=True)
         return Sucess(data=res)
     except Exception as e:
-        return Sucess(data=str(e))
+        if 'automatically' in str(e):
+            return Sucess(data=str(e))
+        else:
+            # res = str(e).split('\n')
+            # return Fail(data=res)
+            return Fail(str(e))
 
 
 @api.route("/debug/<int:id>", methods=["GET"])
