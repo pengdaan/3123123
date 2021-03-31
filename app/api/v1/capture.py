@@ -11,7 +11,7 @@
 from app.libs.redprint import Redprint
 from app.libs.code import Sucess
 from app.models.user import User
-from app.models.capture import get_pro_list, get_conf_list
+from app.models.capture import get_pro_list, get_conf_list, get_category_list
 
 api = Redprint("capture")
 
@@ -42,3 +42,19 @@ def conf_list(pro_id):
     pro_list_info = get_conf_list(pro_id)
     return Sucess(data=pro_list_info)
 
+
+@api.route("/<int:pro_id>/category", methods=["GET"])
+def category_list(pro_id):
+    """
+    分类列表
+    """
+    category_list_info = get_category_list(pro_id)
+    return Sucess(data=category_list_info)
+
+
+@api.route("/upload", methods=["POST"])
+def upload_api():
+    """
+    配置列表
+    """
+    return Sucess()

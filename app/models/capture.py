@@ -27,3 +27,12 @@ def get_conf_list(pro_id):
     fonf_list_info = serialize_sqlalchemy_obj(fonf_list)
     return fonf_list_info
 
+
+def get_category_list(pro_id):
+    category = "select id,category_name from category where pro_id=:pro_id;"
+    category_list = db.session.execute(text(category), {"pro_id": pro_id}).fetchall()
+    category_list_info = serialize_sqlalchemy_obj(category_list)
+    return category_list_info
+
+
+
