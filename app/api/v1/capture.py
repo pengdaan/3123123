@@ -43,7 +43,7 @@ def conf_list(pro_id):
     return Sucess(data=pro_list_info)
 
 
-@api.route("/<int:pro_id>/category", methods=["GET"])
+@api.route("/<int:pro_id>/cate_list", methods=["GET"])
 def category_list(pro_id):
     """
     分类列表
