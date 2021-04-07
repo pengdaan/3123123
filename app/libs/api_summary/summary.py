@@ -104,9 +104,11 @@ def api_result(summary, in_out):
                     ]
                 except Exception:
                     # 用例运行失败
-                    if 'reason' in meta_data['response'] and 'status_code' in meta_data['response']:
-                        result['response']['body'] = meta_data['response']['reason']
-                        result['response']['status_code'] = meta_data['response']['status_code']  
+                    if "reason" in meta_data["response"] and "status_code" in meta_data["response"]:
+                        result["response"]["body"] = meta_data["response"]["reason"]
+                        result["response"]["status_code"] = meta_data["response"][
+                            "status_code"
+                        ]
         result["status"] = record["status"]
         result["msg"] = record["attachment"]
     return result

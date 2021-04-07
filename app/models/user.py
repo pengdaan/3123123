@@ -130,4 +130,3 @@ class User(Base):
             for i in login_user_list:
                 list.append({"id": i.id, "name": i.username})
             return list
-

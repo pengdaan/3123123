@@ -316,9 +316,9 @@ def del_hook():
             delData.func_name.data, api_id=None, pro_id=delData.pro_id.data
         )
     if len(case_is_activite) > 0 or len(api_is_activite) > 0:
-        print('api_is_activite',api_is_activite)
+        # print("api_is_activite", api_is_activite)
         all_is_activite = api_is_activite + case_is_activite
-        return Fail(data=all_is_activite, msg="删除失败,该函数在api或case中正在使用") 
+        return Fail(data=all_is_activite, msg="删除失败,该函数在api或case中正在使用")
     else:
 
         Hook.del_hook(delData.id.data)

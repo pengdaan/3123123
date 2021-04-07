@@ -291,8 +291,12 @@ def get_plan_stask_list(plan_id):
 @auth_jwt
 def test_wechat_robort():
     robort_info = TaskForm().validate_for_api()
-    print('robort_info.robort.data',robort_info.robort.data)
-    if robort_info.robort.data and "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?" in robort_info.robort.data:
+    # print("robort_info.robort.data", robort_info.robort.data)
+    if (
+        robort_info.robort.data
+        and "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?"
+        in robort_info.robort.data
+    ):
         headers = {"Content-Type": "text/plain"}
         data = {"msgtype": "text", "text": {"content": "hello world"}}
         requests.post(robort_info.robort.data, headers=headers, json=data)
@@ -301,7 +305,7 @@ def test_wechat_robort():
         return Fail(responseCode=2006, msg="发送失败，请检查链接是否正确")
 
 
-@api.route('/count', methods=["GET"])
+@api.route("/count", methods=["GET"])
 @auth_jwt
 def tasks_count():
     """

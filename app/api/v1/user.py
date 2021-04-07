@@ -86,6 +86,3 @@ def logout():
     uid = g.user
     User.update_user_status(uid, 0, 2)
     return Sucess()
-
-
-
