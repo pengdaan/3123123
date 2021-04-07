@@ -14,7 +14,7 @@ BASE_CODE_HOOK_SETUP = """
 # 内容调试成功后,请删除调试代码
 
 def hook_setup(*args):
-    pass 
+    pass
 
     """
 

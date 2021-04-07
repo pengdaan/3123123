@@ -26,7 +26,7 @@ from app.api.v1 import (
     tag,
     task,
     user,
-    capture
+    capture,
 )
 
 

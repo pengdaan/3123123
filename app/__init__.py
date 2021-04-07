@@ -28,7 +28,6 @@ from app.register.scheduler import scheduler
 from flask_docs import ApiDoc
 
 
-
 class Flask(_Flask):
     # 替换Flask中原有的json_encoder方法。
     json_encoder = JSONEncoder
@@ -53,9 +52,9 @@ def create_app(config_name=None):
     # 禁用文档页面
     # app.config['API_DOC_ENABLE'] = False
     # 需要显示文档的 Api
-    app.config['API_DOC_MEMBER'] = ['api', 'platform']
+    app.config["API_DOC_MEMBER"] = ["api", "platform"]
     # 需要排除的 RESTful Api 文档
-    app.config['RESTFUL_API_DOC_EXCLUDE'] = []
+    app.config["RESTFUL_API_DOC_EXCLUDE"] = []
     register_blueprints(app)
     register_headers(app)
     register_plugin(app)

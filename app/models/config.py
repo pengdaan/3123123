@@ -10,7 +10,6 @@
 
 from sqlalchemy import text
 
-from flask_sqlalchemy import orm
 from app.models.base import Base, db
 
 

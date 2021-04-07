@@ -130,7 +130,7 @@ def sql_cconnection():
         res = rows.all(as_dict=True)
         return Sucess(data=res)
     except Exception as e:
-        if 'automatically' in str(e):
+        if "automatically" in str(e):
             return Sucess(data=str(e))
         else:
             # res = str(e).split('\n')
