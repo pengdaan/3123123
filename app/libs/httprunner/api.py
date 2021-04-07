@@ -192,7 +192,7 @@ class HttpRunner(object):
             utils.dump_logs(tests_mapping, project_mapping, "loaded")
         # parse tests
         self.exception_stage = "parse tests"
-        print("从这里开始调用parse_tests")
+        # print("从这里开始调用parse_tests")
         parsed_testcases = parser.parse_tests(tests_mapping)
         parse_failed_testfiles = parser.get_parse_failed_testfiles()
         if parse_failed_testfiles:
