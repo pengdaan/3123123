@@ -25,10 +25,11 @@ def get_func_name(data):
     if "request" in data:
         api_request = data["request"]
         if "json" in api_request:
-            for v in api_request["json"].values():
-                if isinstance(v, str):
-                    func_list = re.findall(r"(?<=\$\{)(.*)(?=\()", v)
-                    func_lists = func_lists + func_list
+            if isinstance(api_request["json"],dict):
+                for v in api_request["json"].values():
+                    if isinstance(v, str):
+                        func_list = re.findall(r"(?<=\$\{)(.*)(?=\()", v)
+                        func_lists = func_lists + func_list
         if "data" in api_request:
             for v in api_request["data"].values():
                 if isinstance(v, str):

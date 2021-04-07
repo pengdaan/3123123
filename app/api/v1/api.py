@@ -29,7 +29,14 @@ api = Redprint("interface")
 def add_api():
     """
     添加api
-    :return:
+    {
+        "pro_id":"82",
+        "name":"测试",
+        "path":"/baidu.com",
+        "method":"GET",
+        "cat_id":250,
+        "type":"1"
+    }
     """
     form = addApiForm().validate_for_api()
     apiInfo = Api.add_api(

@@ -25,6 +25,8 @@ from .register.header import register_headers
 from .register.logger import register_configure_logging
 
 from app.register.scheduler import scheduler
+from flask_docs import ApiDoc
+
 
 
 class Flask(_Flask):
@@ -46,6 +48,14 @@ def create_app(config_name=None):
     CORS(app, supports_credentials=True)
     app.config.from_object(config[config_name])
     app.secret_key = app.config["SESSION_KEY"]
+    # 本地加载
+    # app.config['API_DOC_CDN'] = False
+    # 禁用文档页面
+    # app.config['API_DOC_ENABLE'] = False
+    # 需要显示文档的 Api
+    app.config['API_DOC_MEMBER'] = ['api', 'platform']
+    # 需要排除的 RESTful Api 文档
+    app.config['RESTFUL_API_DOC_EXCLUDE'] = []
     register_blueprints(app)
     register_headers(app)
     register_plugin(app)
@@ -57,4 +67,5 @@ def create_app(config_name=None):
     # 启动apscheduler服务
     scheduler.init_app(app)
     scheduler.start()
+    ApiDoc(app)
     return app
