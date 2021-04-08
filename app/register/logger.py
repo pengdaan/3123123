@@ -26,7 +26,7 @@ def register_configure_logging(app):
     path = Path(app.config["LOG_PATH"])
     if not path.exists():
         path.mkdir(parents=True)
-    log_name = Path(path, "sips.log")
+    log_name = Path(path, "luna.log")
     logging.basicConfig(handlers=[InterceptHandler(level="INFO")], level="INFO")
     logger.configure(handlers=[{"sink": sys.stderr, "level": "INFO"}])  # 配置日志到标准输出流
     logger.add(
