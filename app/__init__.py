@@ -25,7 +25,6 @@ from .register.header import register_headers
 from .register.logger import register_configure_logging
 
 from app.register.scheduler import scheduler
-from flask_docs import ApiDoc
 
 
 class Flask(_Flask):
@@ -66,5 +65,4 @@ def create_app(config_name=None):
     # 启动apscheduler服务
     scheduler.init_app(app)
     scheduler.start()
-    ApiDoc(app)
     return app

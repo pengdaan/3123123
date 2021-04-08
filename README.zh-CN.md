@@ -18,7 +18,3 @@
 ###### 更新包命令行
 
 pip freeze > requirements.txt
-
-###### doc 文档
-
-http://127.0.0.1:5000/docs/api/
