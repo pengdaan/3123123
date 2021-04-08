@@ -412,5 +412,5 @@ class Parse(object):
 def format_json(value):
     try:
         return json.dumps(value, indent=4, separators=(",", ": "), ensure_ascii=False)
-    except Exception as e:
+    except Exception:
         return value

@@ -1159,7 +1159,6 @@ def __prepare_testcase_tests(
 
             if "upload" in test_dict["request"]:
                 from httprunner.ext.uploader import prepare_upload_test
-
                 prepare_upload_test(test_dict)
 
         # current teststep variables
@@ -1510,7 +1509,7 @@ def get_testcase(testcase, base_tests_mapping):
             return new_testData
         else:
             return [testcase]
-    except Exception as e:
+    except Exception:
         return [testcase]
 
 

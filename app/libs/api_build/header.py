@@ -25,6 +25,9 @@ def update_api_header(testList):
                                 for i in config_headers.keys():
                                     if i not in api_headers:
                                         api_headers[i] = config_headers[i]
+                        else:
+                            # 有可能存在全部的header参数都配置在config中
+                            i["request"]["headers"] = config_headers
 
 
 def update_case_header(testList):
@@ -42,3 +45,6 @@ def update_case_header(testList):
                                 for i in config_headers.keys():
                                     if i not in api_headers:
                                         api_headers[i] = config_headers[i]
+                            else:
+                                # 有可能存在全部的header参数都配置在config中
+                                i["request"]["headers"] = config_headers

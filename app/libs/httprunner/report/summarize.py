@@ -118,5 +118,5 @@ def get_run_hook(records):
                     new_error = hook_list + i["attachment"]
                     i["attachment"] = new_error
         return records
-    except Exception as e:
+    except Exception:
         return records

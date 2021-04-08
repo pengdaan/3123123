@@ -25,7 +25,7 @@ def get_func_name(data):
     if "request" in data:
         api_request = data["request"]
         if "json" in api_request:
-            if isinstance(api_request["json"],dict):
+            if isinstance(api_request["json"], dict):
                 for v in api_request["json"].values():
                     if isinstance(v, str):
                         func_list = re.findall(r"(?<=\$\{)(.*)(?=\()", v)

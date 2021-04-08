@@ -60,7 +60,9 @@ class CaseModule(Base):
         return db.session.commit()
 
     @staticmethod
-    def add_api_module(name, body, case_id, user_id, other_config_id, func_name, sql_config_id):
+    def add_api_module(
+        name, body, case_id, user_id, other_config_id, func_name, sql_config_id
+    ):
         with db.auto_commit():
             CaseModuleInfo = CaseModule()
             CaseModuleInfo.name = name

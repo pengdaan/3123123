@@ -10,7 +10,7 @@
 
 from app.libs import run
 from app.libs.auth import auth_jwt
-from app.libs.code import Sucess
+from app.libs.code import Sucess, Fail
 from app.libs.parser import Format
 from app.libs.redprint import Redprint
 from app.models.api import Api
@@ -114,7 +114,7 @@ def get_api_detail(id):
         }
         return Sucess(data=res)
     else:
-        return Sucess(msg="Api 不存在")
+        return Fail(data="Api 不存在")
 
 
 @api.route("/update", methods=["POST"])
