@@ -432,8 +432,8 @@ def updateValues(config_variables, case_variables):
         for i in case_variables:
             for k in config_variables:
                 if i.keys() & k.keys():
-                    print("i:", i)
-                    print("k:", k)
+                    # print("i:", i)
+                    # print("k:", k)
                     config_variables.remove(k)
                     all_variables.append(i)
         all_variables = case_variables + config_variables
