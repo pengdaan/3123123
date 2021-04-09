@@ -2,7 +2,7 @@
 
 import sys
 import traceback
-
+import re
 from app.libs.httprunner import exceptions, logger, parser
 
 
@@ -42,12 +42,30 @@ class Validator(object):
             check_item, parser.LazyString
         ):
             # format 1/2/3
+            check_item = self.__check_func(check_item)
+           
             check_value = self.session_context.eval_content(check_item)
         else:
             # format 4/5
             check_value = self.resp_obj.extract_field(check_item)
-
         return check_value
+    
+    def __check_func(self, check_item):
+        try:
+            func_dict = {}
+            new_check_item = check_item.raw_string
+            func_value = re.findall(r"(?<=content\.)(.+?)(?=(,|\)))", check_item.raw_string)
+            if len(func_value):
+                for i in func_value:
+                    func_dict.update({"content." + i[0]: ""})
+            for k, v in func_dict.items():
+                check_value = self.resp_obj.extract_field(k)
+                new_check_item = new_check_item.replace(k, str(check_value))
+            # 重新生成check_item,类型为LazyString
+            check_item = parser.prepare_lazy_data(new_check_item, functions_mapping=check_item.functions_mapping, check_variables_set=check_item.check_variables_set, cached=check_item.cached)
+        except Exception:
+            check_item = check_item
+        return check_item
 
     def __eval_validator_expect(self, expect_item):
         """evaluate expect item in validator.
@@ -180,7 +198,6 @@ def run_validate_script():
             validate_msg = "\nvalidate: {} {} {}({})".format(
                 check_item, comparator, expect_value, type(expect_value).__name__
             )
-
             try:
                 validator.to_value(self.session_context.test_variables_mapping)
                 validator_dict["check_result"] = "pass"
@@ -199,9 +216,7 @@ def run_validate_script():
                 )
                 logger.log_error(validate_msg)
                 failures.append(validate_msg)
-
             self.validation_results["validate_extractor"].append(validator_dict)
-
             # restore validator args, in case of running multiple times
             validator.update_args(validator_args)
 
