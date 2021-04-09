@@ -24,7 +24,8 @@ class BaseConfig:
     SESSION_KEY = "app"
     #
     IGNORE_CHECK_LOGIN_URLS = ["^/static", "^/favicon.ico"]
-  
+    # 日志路径
+    LOG_PATH = ""
 
 
 class DevelopmentConfig(BaseConfig):
