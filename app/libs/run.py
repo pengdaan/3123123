@@ -300,13 +300,14 @@ def debug_api(
                 "project_mapping": project_mapping,
                 "testcases": testcase_list,
             }
+
             header.update_case_header(testcase_list)
             testcase_list = add_sql_config(testcase_list)
             params.update_teststeps_params_by_list(testcase_list)
             testcase_list = luna_summary.out_put_data(
                 testcase_list, project_mapping, type=1
             )
-            # print("我这里开始数据装载---->", testcase_list)
+            # print("数据装载---->", testcase_list)
             testsuites = add_testsuites(testcase_list, case_id)
             runner.run(testsuites)
             in_out = runner.get_vars_out()
@@ -432,8 +433,8 @@ def updateValues(config_variables, case_variables):
         for i in case_variables:
             for k in config_variables:
                 if i.keys() & k.keys():
-                    print("i:", i)
-                    print("k:", k)
+                    # print("i:", i)
+                    # print("k:", k)
                     config_variables.remove(k)
                     all_variables.append(i)
         all_variables = case_variables + config_variables

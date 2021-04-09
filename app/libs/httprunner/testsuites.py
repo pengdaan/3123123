@@ -51,7 +51,7 @@ def get_case_parameters(case_id):
                         try:
                             for i in values:
                                 target_values.append(json.loads(i))
-                        except Exception as e:
+                        except Exception:
                             target_values = values
                         new_dict = {key: target_values}
                         this_arameters.update(new_dict)
