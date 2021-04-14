@@ -9,5 +9,5 @@
   // 自动格式化代码
   "editor.formatOnType": true,
   "editor.formatOnSave": true,
-  "python.pythonPath": "venv/bin/python"
+  "python.pythonPath": "/Users/leo/workspace/luna/luna-admin/env/bin/python3.9"
 }
