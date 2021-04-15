@@ -8,8 +8,6 @@
 @版本        :1.0
 """
 
-from flask import jsonify
-
 from app.libs.plan_run import run_plan_by_user
 from app.libs.redprint import Redprint
 from app.models.plan import Plan

@@ -10,7 +10,6 @@
 
 __author__ = "leo"
 
-import datetime
 import importlib
 import io
 import json
@@ -23,21 +22,13 @@ import types
 from ast import literal_eval
 from functools import reduce
 from urllib.parse import urlparse
-
-import requests
 import yaml
-from bs4 import BeautifulSoup
-from flask._compat import text_type
-from requests.cookies import RequestsCookieJar
-
-from app.libs.decimal_encoder import JSONEncoder
 from app.libs.httprunner.api import HttpRunner
-from app.libs.httprunner.parser import ERROR, LazyString
+from app.libs.httprunner.parser import ERROR
 from app.libs.httprunner.testsuites import add_testsuites
 from app.libs.variable import get_all_key_by_dict, update_all_key_by_dict, update_list
 from app.models.config import Config
 from app.models.hook import Hook
-from app.models.report import Report
 from app.libs.api_build import header
 from app.libs.api_build import params
 from app.libs.api_summary import summary as luna_summary
@@ -202,7 +193,7 @@ def parse_tests(
                 for key, value in content.items():
                     try:
                         content[key] = eval(value.replace("\n", ""))
-                    except Exception as e:
+                    except Exception:
                         content[key] = value
         testset["config"] = config
     if name:
@@ -309,13 +300,14 @@ def debug_api(
                 "project_mapping": project_mapping,
                 "testcases": testcase_list,
             }
+
             header.update_case_header(testcase_list)
             testcase_list = add_sql_config(testcase_list)
             params.update_teststeps_params_by_list(testcase_list)
             testcase_list = luna_summary.out_put_data(
                 testcase_list, project_mapping, type=1
             )
-            # print("我这里开始数据装载---->", testcase_list)
+            # print("数据装载---->", testcase_list)
             testsuites = add_testsuites(testcase_list, case_id)
             runner.run(testsuites)
             in_out = runner.get_vars_out()
@@ -441,8 +433,8 @@ def updateValues(config_variables, case_variables):
         for i in case_variables:
             for k in config_variables:
                 if i.keys() & k.keys():
-                    print("i:", i)
-                    print("k:", k)
+                    # print("i:", i)
+                    # print("k:", k)
                     config_variables.remove(k)
                     all_variables.append(i)
         all_variables = case_variables + config_variables

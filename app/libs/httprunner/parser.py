@@ -1159,7 +1159,6 @@ def __prepare_testcase_tests(
 
             if "upload" in test_dict["request"]:
                 from httprunner.ext.uploader import prepare_upload_test
-
                 prepare_upload_test(test_dict)
 
         # current teststep variables
@@ -1480,7 +1479,7 @@ def _parameters(tests_mapping):
     # 该功能已废弃
     if "parameters" in tests_mapping["testcases"][0]["config"]:
         base_tests_mapping = tests_mapping["testcases"][0]["config"]["parameters"]
-        print("原数据:", tests_mapping["testcases"][0]["config"]["parameters"])
+        # print("原数据:", tests_mapping["testcases"][0]["config"]["parameters"])
         new_teststeps = []
         for testcase in tests_mapping["testcases"][0]["teststeps"]:
             new_case_list = get_testcase(testcase, base_tests_mapping)
@@ -1510,7 +1509,7 @@ def get_testcase(testcase, base_tests_mapping):
             return new_testData
         else:
             return [testcase]
-    except Exception as e:
+    except Exception:
         return [testcase]
 
 

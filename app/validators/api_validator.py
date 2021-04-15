@@ -14,6 +14,8 @@ from wtforms.validators import DataRequired, Length
 from app.models.api import Api
 from app.models.project import Project
 from app.validators.base_validator import BaseForm as Form
+from sqlalchemy import text
+from app.models.base import db
 
 
 class ApiForm(Form):
@@ -49,6 +51,13 @@ class updateApiForm(ApiForm):
     def validate_id(self, value):
         if not Api.query.filter_by(id=value.data).first():
             raise ValidationError(message="Api不存在")
+
+    def validate_path(self, value):
+        api_info = Api.query.filter_by(id=self.id.data).first()
+        taget_sql = "select * from api where pro_id =:pro_id and path=:path and id !=:id"
+        res = db.session.execute(text(taget_sql), {"id": api_info.id, "pro_id": api_info.pro_id, "path": value.data}).fetchall()
+        if res:
+            raise ValidationError(message="接口路径已存在，请勿重复添加")
 
 
 class FindApiForm(Form):

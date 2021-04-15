@@ -99,7 +99,7 @@ class Hook(Base):
                             "api_id": i["api_id"],
                             "api_name": api_info.name,
                             "module_id": i["id"],
-                            "module_name": i["name"]
+                            "module_name": i["name"],
                         }
                         api_result.append(api_detail)
 
@@ -125,9 +125,10 @@ class Hook(Base):
                             "api_id": i["api_id"],
                             "api_name": api_info.name,
                             "module_id": i["id"],
-                            "module_name": i["name"]
+                            "module_name": i["name"],
                         }
-                        api_result.append(api_detail)            
+                        api_result.append(api_detail)
+
         return api_result
 
     @staticmethod
@@ -153,7 +154,9 @@ class Hook(Base):
                 case_ids.append(i["id"])
         if len(case_ids) > 0:
             pro_all_case = ",".join("%s" % a for a in case_ids)
-            modules = "SELECT id,name FROM `case_module` WHERE case_id in ({}) ".format(pro_all_case)
+            modules = "SELECT id,name FROM `case_module` WHERE case_id in ({}) ".format(
+                pro_all_case
+            )
             modules_result = db.session.execute(
                 text(modules), {"pro_id": pro_id}
             ).fetchall()
@@ -163,7 +166,9 @@ class Hook(Base):
                     module_ids.append(i["id"])
                 if len(module_ids) > 0:
                     case_all_modules = ",".join("%s" % a for a in module_ids)
-                    taget_sql = "SELECT * FROM `case_module` WHERE find_in_set(:func_name, func_name) and id in ({}) ".format(case_all_modules)
+                    taget_sql = "SELECT * FROM `case_module` WHERE find_in_set(:func_name, func_name) and id in ({}) ".format(
+                        case_all_modules
+                    )
                     result = db.session.execute(
                         text(taget_sql), {"func_name": func_name}
                     ).fetchall()
@@ -175,7 +180,7 @@ class Hook(Base):
                                 "case_id": i["case_id"],
                                 "case_name": case_info.case_name,
                                 "case_module_id": i["id"],
-                                "case_module_name": i["name"]
+                                "case_module_name": i["name"],
                             }
                             case_func_result.append(data)
         return case_func_result

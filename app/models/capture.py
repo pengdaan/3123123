@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-'''
+"""
 @文件        :capture.py
 @说明        :
 @时间        :2021/03/29 15:23:06
 @作者        :Leo
 @版本        :1.0
-'''
+"""
 
 from sqlalchemy import text
 
@@ -33,6 +33,3 @@ def get_category_list(pro_id):
     category_list = db.session.execute(text(category), {"pro_id": pro_id}).fetchall()
     category_list_info = serialize_sqlalchemy_obj(category_list)
     return category_list_info
-
-
-
