@@ -116,7 +116,6 @@ def get_api_detail(id):
     else:
         return Fail(data="Api 不存在")
 
-
 @api.route("/update", methods=["POST"])
 @auth_jwt
 def update_api():
@@ -207,10 +206,9 @@ def debug_api():
 def FindApi():
     """
     查询
-    :return:
+    1.通过api名称模糊查询
+    2.通过分类查询
     """
-    # 通过api名称模糊查询，
-    # 通过分类查询
     result = {}
     api_lists = []
     apiData = FindApiForm().validate_for_api()
