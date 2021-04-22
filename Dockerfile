@@ -1,6 +1,6 @@
 # 基础镜像
 # FROM pengdaan/luna-web-admin-base:v1.0
-FROM python:3.7
+FROM python:3.9
 ENV LANG C.UTF-8
 ENV TZ=Asia/Shanghai
 
