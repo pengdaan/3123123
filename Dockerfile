@@ -32,10 +32,10 @@ WORKDIR /opt/workspace/Luna/
 COPY . .
 COPY ./nginx.conf /etc/nginx/nginx.conf
 RUN pip3 install --upgrade pip
-# RUN pip install -r ./requirements.txt -i \
-#     https://pypi.tuna.tsinghua.edu.cn/simple/ \
-#     --default-timeout=100
-RUN pip install -r ./requirements.txt 
+RUN pip install -r ./requirements.txt -i \
+    https://pypi.tuna.tsinghua.edu.cn/simple/ \
+    --default-timeout=100
+# RUN pip install -r ./requirements.txt 
 RUN dos2unix ./start.sh
 RUN chmod +x ./start.sh
 
