@@ -18,3 +18,10 @@
 ###### 更新包命令行
 
 pip freeze > requirements.txt
+
+###### docker 部署
+
+- .flaskenv 配置为 production
+- docker build -t luna-system-admin:自定义版本号 .
+- 执行 docker tag imagesID harbor.bluemoon.com.cn/luna/luna-system-admin:版本号
+- 执行 docker push harbor.bluemoon.com.cn/luna/luna-system-admin:版本号

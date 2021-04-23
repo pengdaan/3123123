@@ -70,7 +70,7 @@ def report_list(pro_id, page_id):
 @api.route("/detail/<int:id>")
 def report_detail(id):
     report = Report.query.filter_by(id=id).first_or_404("reportId")
-    summary = json.loads(report.summary, encoding="utf-8")
+    summary = json.loads(report.summary)
     summary["html_report_name"] = report.report_name
     start_at_timestamp = summary["time"]["start_at"]
     utc_time_iso_8601_str = datetime.utcfromtimestamp(start_at_timestamp).isoformat()
@@ -163,7 +163,7 @@ def report_suite_detail():
     # print("this.report_list:", report_list)
     for i in report_list:
         report = Report.query.filter_by(id=int(i)).first_or_404("reportId")
-        summary = json.loads(report.summary, encoding="utf-8")
+        summary = json.loads(report.summary)
         start_at_timestamp = summary["time"]["start_at"]
         utc_time_iso_8601_str = datetime.utcfromtimestamp(
             start_at_timestamp

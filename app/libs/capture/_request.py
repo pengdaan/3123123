@@ -33,6 +33,7 @@ Base_Json_Data_Request = {
         "method": "",
         "verify": False,
         "headers": {},
+        "params": {},
         "json": {},
     },
     "desc": {"header": {}, "data": {}, "params": {}, "variables": {}, "extract": {}},
