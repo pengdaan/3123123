@@ -28,7 +28,8 @@ def _header(data, desc=None):
         if desc:
             _api_header.update({i["name"]: ""})
         else:
-            _api_header.update({i["name"]: i["value"]})
+            values = i["value"]
+            _api_header.update({i["name"]: values})
     return _api_header
 
 
@@ -72,7 +73,6 @@ def _form_data(name, url, method, headers, _dheaders, params, _dparams, form_dat
     _request.Base_Form_Data_Request["desc"]["header"] = _dheaders
     _request.Base_Form_Data_Request["desc"]["params"] = _dparams
     _request.Base_Form_Data_Request["desc"]["data"] = _api_form_data
-    # print('form:----------->', _request.Base_Form_Data_Request)
     return _request.Base_Form_Data_Request
 
 
@@ -90,17 +90,17 @@ def _api_json(name, url, method, headers, _dheaders, params, _dparams, body):
         if body[0] == "{}":
             _request.Base_Json_Data_Request["request"]["json"] = {}
         else:
+            api_body = body[0].replace('\\', '').replace('n','').replace(' ','')
             try:
-                _request.Base_Json_Data_Request["request"]["json"] = json.loads(body[0])
+                _request.Base_Json_Data_Request["request"]["json"] = json.loads(api_body)
             except Exception:
-                _request.Base_Json_Data_Request["request"]["json"] = body[0]
+                _request.Base_Json_Data_Request["request"]["json"] = api_body
     else:
-        _request.Base_Json_Data_Request["request"]["json"] = ""
-    # print('json-----------》', _request.Base_Json_Data_Request)
+        _request.Base_Json_Data_Request["request"]["json"] = {}
     return _request.Base_Json_Data_Request
 
 
-def _api_get_json(name, url, method, headers, params, _dheaders, _dparams):
+def _api_get_json(name, url, method, headers, _dheaders, params, _dparams):
     _request.Base_Get_Data_Request["name"] = name
     _request.Base_Get_Data_Request["request"]["url"] = url
     _request.Base_Get_Data_Request["request"]["method"] = method
@@ -108,5 +108,4 @@ def _api_get_json(name, url, method, headers, params, _dheaders, _dparams):
     _request.Base_Get_Data_Request["request"]["params"] = params
     _request.Base_Get_Data_Request["desc"]["header"] = _dheaders
     _request.Base_Get_Data_Request["desc"]["params"] = _dparams
-    # print("get ---------------》", _request.Base_Get_Data_Request)
     return _request.Base_Get_Data_Request
