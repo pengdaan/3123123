@@ -85,30 +85,30 @@ def api_result(summary, in_out):
                     req_data = json.dumps(request)
                     req_data = req_data.replace("\\n", "").replace("&#34;", "'")
                     req_data = eval(str(json.loads(req_data)))
-                    req_data["body"] = json.loads(req_data["body"].replace("'", '"'))
-                    req_data["headers"] = json.loads(request["headers"])
+                    if 'body' in req_data:
+                        req_data["body"] = json.loads(req_data["body"].replace("'", '"'))
+                    if 'headers' in req_data:
+                        req_data["headers"] = json.loads(request["headers"])
                     result["request"] = req_data
                 except Exception as e:
                     result["request"] = str(e)
                 response = meta_data["response"]
                 result["response"] = {}
                 result["response"]["headers"] = json.loads(response["headers"])
-                # print(meta_data["response"]["status_code"])
-                # print(meta_data["response"]["reason"])
                 try:
-                    result["response"]["body"] = (
-                        json.loads(response["body"]) if response["body"] else ""
-                    )
-                    result["response"]["status_code"] = meta_data["response"][
-                        "status_code"
-                    ]
-                except Exception:
-                    # 用例运行失败
-                    if "reason" in meta_data["response"] and "status_code" in meta_data["response"]:
-                        result["response"]["body"] = meta_data["response"]["reason"]
+                    if 'body' in response:
+                        result["response"]["body"] = (
+                            json.loads(response["body"]) if response["body"] else ""
+                        )
+                    if 'status_code' in meta_data:
                         result["response"]["status_code"] = meta_data["response"][
                             "status_code"
                         ]
+                except Exception:
+                    # 用例运行失败
+                    if "reason" in meta_data["response"] and "status_code" in meta_data["response"]:
+                        result["response"]["body"] = BeautifulSoup(response["body"], features="html.parser").prettify()
+                        result["response"]["status_code"] = meta_data["response"]["status_code"]
         result["status"] = record["status"]
         result["msg"] = record["attachment"]
     return result
@@ -135,8 +135,10 @@ def apis_result(summary, in_out):
                     req_data = json.dumps(request)
                     req_data = req_data.replace("\\n", "").replace("&#34;", "'")
                     req_data = eval(str(json.loads(req_data)))
-                    req_data["body"] = json.loads(req_data["body"].replace("'", '"'))
-                    req_data["headers"] = json.loads(request["headers"])
+                    if 'body' in req_data:
+                        req_data["body"] = json.loads(req_data["body"].replace("'", '"'))
+                    if 'headers' in req_data:
+                        req_data["headers"] = json.loads(request["headers"])
                     result["request"] = req_data
                 except Exception as e:
                     result["request"] = str(e)
@@ -144,11 +146,12 @@ def apis_result(summary, in_out):
                 result["response"] = {}
                 result["response"]["headers"] = json.loads(response["headers"])
                 try:
-                    result["response"]["body"] = (
-                        json.loads(response["body"]) if response["body"] else ""
-                    )
-                except Exception as e:
-                    result["response"]["body"] = str(e)
+                    if 'body' in response:
+                        result["response"]["body"] = (
+                            json.loads(response["body"]) if response["body"] else ""
+                        )
+                except Exception:
+                    result["response"]["body"] = BeautifulSoup(response["body"], features="html.parser").prettify()
             result_list.append(result)
     return result_list
 

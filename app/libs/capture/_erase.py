@@ -96,7 +96,7 @@ def _api_json(name, url, method, headers, _dheaders, params, _dparams, body):
             except Exception:
                 _request.Base_Json_Data_Request["request"]["json"] = api_body
     else:
-        _request.Base_Json_Data_Request["request"]["json"] = ""
+        _request.Base_Json_Data_Request["request"]["json"] = {}
     return _request.Base_Json_Data_Request
 
 

@@ -26,7 +26,7 @@ import yaml
 from app.libs.httprunner.api import HttpRunner
 from app.libs.httprunner.parser import ERROR
 from app.libs.httprunner.testsuites import add_testsuites
-from app.libs.variable import get_all_key_by_dict, update_all_key_by_dict, update_list
+from app.libs.variable import get_all_key_by_dict, update_all_key_by_dict, update_list, update_project_persistence, add_persistence_by_api
 from app.models.config import Config
 from app.models.hook import Hook
 from app.libs.api_build import header
@@ -281,6 +281,7 @@ def debug_api(
             case scripts or teststeps
             """
             api = [api]
+        add_persistence_by_api(project, api)
         testcase_list = [
             parse_tests(
                 api,
@@ -300,7 +301,6 @@ def debug_api(
                 "project_mapping": project_mapping,
                 "testcases": testcase_list,
             }
-
             header.update_case_header(testcase_list)
             testcase_list = add_sql_config(testcase_list)
             params.update_teststeps_params_by_list(testcase_list)
@@ -341,6 +341,7 @@ def debug_api(
             }
             runner.run(testcase_list)
             in_out = runner.get_vars_out()
+            update_project_persistence(project, apiIds, in_out)
             summary = luna_summary.api_result(runner._summary, in_out)
             return summary
     except Exception as e:

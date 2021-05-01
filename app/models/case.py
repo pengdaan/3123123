@@ -164,4 +164,3 @@ class Case(Base):
             db.session.add(case)
             db.session.flush()
             return case
-        

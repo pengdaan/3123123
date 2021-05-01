@@ -25,6 +25,7 @@ def api_body(data):
 
 
 def _api_json(name, url, method, headers, _dheaders, params, _dparams, body):
+    target_body = body if body != "" else {}
     _request.Base_Json_Data_Request["name"] = name
     _request.Base_Json_Data_Request["request"]["url"] = url
     _request.Base_Json_Data_Request["request"]["method"] = method
@@ -32,7 +33,7 @@ def _api_json(name, url, method, headers, _dheaders, params, _dparams, body):
     _request.Base_Json_Data_Request["request"]["params"] = params
     _request.Base_Json_Data_Request["desc"]["header"] = _dheaders
     _request.Base_Json_Data_Request["desc"]["params"] = _dparams
-    _request.Base_Json_Data_Request["request"]["json"] = body
+    _request.Base_Json_Data_Request["request"]["json"] = target_body
     return _request.Base_Json_Data_Request
 
 

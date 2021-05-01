@@ -12,7 +12,7 @@ from app.models.api import Api
 
 
 def add_api(name, path, method, pro_id, cat_id):
-    is_api = Api.query.filter_by(path=path).first()
+    is_api = Api.query.filter_by(path=path, pro_id=pro_id).first()
     if not is_api:
         api_info = Api.add_api(name, method, path, pro_id, cat_id, 1)
         api_id = api_info.id
