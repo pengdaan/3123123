@@ -38,3 +38,4 @@ def register_plugin(app):
     from app.models.plan_detail import PlanDetail
     from app.models.plan_report_merge import planReportMerge
     from app.models.variable import Variable
+

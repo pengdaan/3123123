@@ -182,9 +182,7 @@ def debug_api():
     debugData = DebugForm().validate_for_api()
     api = Format(debugData.body.data)
     api.parse()
-    config = Config.query.filter_by(id=debugData.config_id.data).first_or_404(
-        "configId"
-    )
+    config = Config.query.filter_by(id=debugData.config_id.data).first_or_404("configId")
     if debugData.sql_config_id.data != 0:
         api.testcase["request"]["json"]["id"] = int(debugData.sql_config_id.data)
         test_case = eval(str(api.testcase))
@@ -197,7 +195,7 @@ def debug_api():
         api=test_case,
         project=debugData.pro_id.data,
         case_id=None,
-        config=run.parse_host(host, eval(config.body)),
+        config=run.parse_host(host, eval(config.body))
     )
     return Sucess(data=summary)
 
