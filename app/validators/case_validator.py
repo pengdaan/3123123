@@ -83,3 +83,18 @@ class SetupForm(Form):
     setups = FieldList(
         StringField(), validators=[Length(min=1), DataRequired(message="list不允许为空")]
     )
+
+
+class CopyCaseForm(Form):
+    id = IntegerField()
+    user_id = IntegerField()
+    pro_id = IntegerField(validators=[DataRequired(message="proId不允许为空")])
+    case_name = StringField(
+        validators=[Length(min=1, max=255), DataRequired(message="name不允许为空")]
+    )
+
+    def validate_case_name(self, value):
+        if Case.query.filter_by(
+            pro_id=self.pro_id.data, status=1, case_name=value.data
+        ).first():
+            raise ValidationError(message="case已存在")

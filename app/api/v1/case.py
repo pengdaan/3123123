@@ -31,6 +31,7 @@ from app.validators.case_validator import (
     DebugCaseForm,
     SetupForm,
     UpdateCaseForm,
+    CopyCaseForm
 )
 from app.validators.case_detail_validator import (
     UpdateCaseSetup,
@@ -551,3 +552,16 @@ def case_run_by_socket(req):
             },
             namespace="/test",
         )
+
+
+@api.route('/copy', methods=["POST"])
+@auth_jwt
+def copy_case():
+    req = CopyCaseForm().validate_for_api()
+    case_module = CaseModule.query.filter_by(case_id=req.id.data).all()
+    new_case = Case.copy_case(req.id.data, req.user_id.data, req.case_name.data)
+    for i in case_module:
+        case_detail = Case_Detail.query.filter_by(module_id=i.id).first()
+        new_case_module = CaseModule.add_api_module(i.name, i.body, new_case.id, req.user_id.data, i.other_config_id, i.func_name, i.sql_config_id)
+        Case_Detail.add_case_detail(case_detail.name, new_case_module.id, case_detail.path, case_detail.setup, new_case.id, case_detail.api_id)
+    return Sucess()
