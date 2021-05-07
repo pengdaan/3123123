@@ -43,7 +43,6 @@ class Case(Base):
 
     @staticmethod
     def add_Case(pro_id, case_name, user_id, config_id, desc, tag_id):
-        print(pro_id, case_name, user_id, config_id, desc, tag_id)
         with db.auto_commit():
             case = Case()
             case.pro_id = pro_id
@@ -150,3 +149,18 @@ class Case(Base):
                 }
                 case_list.append(case_detail)
         return case_list
+
+    @staticmethod
+    def copy_case(id, user_id, case_name):
+        case_detail = Case.query.filter_by(id=id, status=1).first()
+        with db.auto_commit():
+            case = Case()
+            case.pro_id = case_detail.pro_id
+            case.case_name = case_name
+            case.user_id = user_id
+            case.config_id = case_detail.config_id
+            case.tag_id = case_detail.tag_id
+            case.desc = case_detail.desc,
+            db.session.add(case)
+            db.session.flush()
+            return case

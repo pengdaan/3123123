@@ -44,7 +44,6 @@ class MYSQL:
             # print ("连接数据库失败, %s" % err)
             self.error = "连接数据库失败, %s" % err
         else:
-            print("数据库连接成功")
             return conn
 
     # 执行查询
@@ -86,5 +85,5 @@ class MYSQL:
                     self._cur.close()
                 if type(self._conn) == "object":
                     self._conn.close()
-            except Exception as e:
+            except Exception :
                 raise ("关闭异常, %s,%s" % (type(self._cur), type(self._conn)))

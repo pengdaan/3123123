@@ -15,9 +15,9 @@ from flask import request
 from app.models.capture import get_pro_list, get_conf_list, get_category_list
 from app.libs.capture import _add, _erase
 from app.models.module import Module
-import time
-
-now_time = int(time.time())
+import datetime
+from app.libs.capture import _mit_erase
+from app.validators.capture_validator import captureForm
 api = Redprint("capture")
 
 
@@ -105,12 +105,38 @@ def upload_api():
                     api_module_detail = _erase._api_get_json(
                         k, k, _method, _headers, _dheaders, _params, _dparams
                     )
+                now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
                 Module.add_api_module(
-                    "capture_" + str(now_time),
+                    "插件抓包录入: " + now_time ,
                     str(api_module_detail),
                     api_id,
                     res["user_id"],
                 )
             else:
                 Fail(msg=str(k) + "解析失败")
+    return Sucess()
+
+
+@api.route('/min_upload', methods=["POST"])
+def min_upload_api():
+    """[summary]
+    抓包接口录入
+
+    Returns:
+        [type]: [description]
+    """
+    res = captureForm().validate_for_api()
+    for i in res.api_details.data:
+        name = i['request']['path'].split('/')[-1]
+        api_id = _add.add_api(name, i['request']['path'], "POST", res.pro_id.data, res.cate_id.data)
+        _desc_header = _mit_erase._desc(i['request']['headers'])
+        _desc_params = _mit_erase._desc(i['request']['params'])
+        now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+        if i["request"]['method'] == 'POST':
+            api_body = _mit_erase.api_body(i['request']['body'])
+            api_module_detail = _mit_erase._api_json(name, i['request']['path'], i["request"]['method'], i['request']['headers'], _desc_header, i['request']['params'], _desc_params, api_body)
+            Module.add_api_module("抓包录入:" + now_time, str(api_module_detail), api_id, res.user_id.data)
+        if i["request"]['method'] == 'GET':
+            api_module_detail = _mit_erase._api_get_json(name, i['request']['path'], i["request"]['method'], i['request']['headers'], _desc_header, i['request']['params'], _desc_params)
+            Module.add_api_module("抓包录入: " + now_time, str(api_module_detail), api_id, res.user_id.data)            
     return Sucess()
