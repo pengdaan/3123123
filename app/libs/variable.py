@@ -98,4 +98,4 @@ def add_persistence_by_api(pro_id, data):
                             i['request']['data'].update({d_key: eval(_persistence_detail['data'])})
                         except Exception:
                             i['request']['data'].update({d_key: _persistence_detail['data']})
-    print('--------------->',data)
+
