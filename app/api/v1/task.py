@@ -17,6 +17,7 @@ from app.models.report import Report
 from datetime import datetime
 from app.validators.task_validator import TaskForm, addTaskForm, updateTaskForm
 from app.libs.auth import auth_jwt
+from loguru import logger
 
 api = Redprint("task")
 
@@ -73,14 +74,14 @@ def add_task():
     name = task_info.name.data
     desc = task_info.desc.data
     trigger_type = task_info.type.data
-    robort = task_info.robort.data
+    robot = task_info.robot.data
     if trigger_type == "date":
         run_time = task_info.run_time.data
-        Task_info = Task.add_task(name, desc, plan_id, run_time, 1, robort)
+        Task_info = Task.add_task(name, desc, plan_id, run_time, 1, robot)
         print("添加一次性任务成功---[ %s ] " % Task_info.id)
     elif trigger_type == "interval":
         interval_time = task_info.interval_time.data
-        Task_info = Task.add_task(name, desc, plan_id, interval_time, 2, robort)
+        Task_info = Task.add_task(name, desc, plan_id, interval_time, 2, robot)
         seconds = int(interval_time)
         if seconds <= 0:
             return Fail(msg="请输入大于0的时间间隔！")
@@ -97,7 +98,7 @@ def add_task():
                 "second": second,
             }
         )
-        Task_info = Task.add_task(name, desc, plan_id, cron_data, 3, robort)
+        Task_info = Task.add_task(name, desc, plan_id, cron_data, 3, robot)
         print("添加周期执行任务成功任务成功---[ %s ] " % id)
     return Sucess()
 
@@ -119,7 +120,7 @@ def update_task():
         name = task_info.name.data
         desc = task_info.desc.data
         trigger_type = task_info.type.data
-        robort = task_info.robort.data
+        robort = task_info.robot.data
         if trigger_type == "date":
             schedule = task_info.run_time.data
             task_type = 1
@@ -246,17 +247,21 @@ def stop_resume_job(id):
         [type]: [description]
     """
     task_info = Task.query.filter_by(id=id).first_or_404("任务不存在")
-    scheduler.remove_job(id)
-    Task.update_task(
-        id=id,
-        name=task_info.name,
-        desc=task_info.desc,
-        schedule=task_info.schedule,
-        type=task_info.type,
-        robot=task_info.robot,
-        status=0,
-    )
-    return Sucess()
+    try:
+        scheduler.remove_job(id)
+    except Exception:
+        logger.info('一次性任务,已消费')
+    finally:
+        Task.update_task(
+            id=id,
+            name=task_info.name,
+            desc=task_info.desc,
+            schedule=task_info.schedule,
+            type=task_info.type,
+            robot=task_info.robot,
+            status=0,
+        )
+        return Sucess()
 
 
 @api.route("/list/<int:plan_id>", methods=["GET"])
@@ -287,20 +292,16 @@ def get_plan_stask_list(plan_id):
     return Sucess(data=plan_task_list)
 
 
-@api.route("/robort/test", methods=["POST"])
+@api.route("/robot/test", methods=["POST"])
 @auth_jwt
 def test_wechat_robort():
     robort_info = TaskForm().validate_for_api()
-    # print("robort_info.robort.data", robort_info.robort.data)
-    if (
-        robort_info.robort.data
-        and "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?"
-        in robort_info.robort.data
-    ):
-        headers = {"Content-Type": "text/plain"}
-        data = {"msgtype": "text", "text": {"content": "hello world"}}
-        requests.post(robort_info.robort.data, headers=headers, json=data)
-        return Sucess()
+    if robort_info.robot.data:
+        if "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?" in robort_info.robot.data or "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?" in robort_info.robot.data:
+            headers = {"Content-Type": "text/plain"}
+            data = {"msgtype": "text", "text": {"content": "hello world"}}
+            requests.post(robort_info.robot.data, headers=headers, json=data)
+            return Sucess()
     else:
         return Fail(responseCode=2006, msg="发送失败，请检查链接是否正确")
 

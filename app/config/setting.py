@@ -33,8 +33,8 @@ class BaseConfig:
 
 
 class DevelopmentConfig(BaseConfig):
-    # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:8852075@127.0.0.1/luna?charset=utf8&autocommit=true"
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.240.82:31989/luna?charset=utf8&autocommit=true'
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:8852075@127.0.0.1/luna?charset=utf8&autocommit=true"
+    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.240.82:31989/luna?charset=utf8&autocommit=true'
     # 调度器开关
     SCHEDULER_API_ENABLED = False
     # ------持久化位置-------
