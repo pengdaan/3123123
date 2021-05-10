@@ -10,6 +10,7 @@
 
 import json
 import time
+import copy
 from datetime import datetime
 from app.libs.code import Sucess
 from flask import render_template, request
@@ -159,17 +160,14 @@ def del_report(id):
 
 @api.route("/suite", methods=["GET"])
 def report_suite_detail():
+    SUMMARYS = copy.deepcopy(BASE_SUMMARYS)
     report_list = request.args.get("report_ids").split(",")
-    # print("this.report_list:", report_list)
     for i in report_list:
         report = Report.query.filter_by(id=int(i)).first_or_404("reportId")
         summary = json.loads(report.summary)
         start_at_timestamp = summary["time"]["start_at"]
-        utc_time_iso_8601_str = datetime.utcfromtimestamp(
-            start_at_timestamp
-        ).isoformat()
+        utc_time_iso_8601_str = datetime.utcfromtimestamp(start_at_timestamp).isoformat()
         summary["time"]["start_datetime"] = utc_time_iso_8601_str
-        SUMMARYS = BASE_SUMMARYS
         SUMMARYS["stat"]["testcases"]["total"] = (
             SUMMARYS["stat"]["testcases"]["total"]
             + summary["stat"]["testcases"]["total"]
@@ -218,7 +216,5 @@ def report_suite_detail():
         SUMMARYS["details"].append(summary["details"][0])
     start_at_timestamp = SUMMARYS["time"]["start_at"]
     utc_time_iso_8601_str = datetime.utcfromtimestamp(start_at_timestamp).isoformat()
-    SUMMARYS["time"]["start_datetime"] = time.strftime(
-        "%Y-%m-%d %H:%M:%S", time.localtime()
-    )
+    SUMMARYS["time"]["start_datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     return render_template("template.html", summary=SUMMARYS)

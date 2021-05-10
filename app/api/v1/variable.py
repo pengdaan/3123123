@@ -9,7 +9,6 @@
 '''
 
 from app.libs.auth import auth_jwt
-from flask import request
 from app.libs.code import Sucess, Fail
 from app.libs.redprint import Redprint
 from app.models.variable import Variable
@@ -19,7 +18,7 @@ api = Redprint("variable")
 
 
 @api.route('/add', methods=["POST"])
-# @auth_jwt
+@auth_jwt
 def add_variable():
     res = AddVariableForm().validate_for_api()
     target_variable = Variable.query.filter_by(name=res.variable_name.data, pro_id=res.pro_id.data).first()
@@ -32,7 +31,7 @@ def add_variable():
 
 
 @api.route('/update', methods=["POST"])
-# @auth_jwt
+@auth_jwt
 def update_variable():
     res = UpdateVariableForm().validate_for_api()
     Variable.update_variable_status(res.id.data, res.status.data, "", res.variable_name.data)
@@ -40,7 +39,7 @@ def update_variable():
 
 
 @api.route('/<int:pro_id>/list', methods=["POST"])
-# @auth_jwt
+@auth_jwt
 def variable_list(pro_id):
     res = VariableListForm().validate_for_api()
     if res.api_id.data:
@@ -53,7 +52,7 @@ def variable_list(pro_id):
 
 
 @api.route('/del', methods=["POST"])
-# @auth_jwt
+@auth_jwt
 def del_variable():
     res = DelVariableListForm().validate_for_api()
     isVariable = Variable.get_variable(res.variable_name.data)
