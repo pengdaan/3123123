@@ -38,13 +38,28 @@ def update_list(list, index):
 
 def update_project_persistence(pro_id, api_id, data):
     """[summary]
-    更新持久化的参数
+    更新持久化的参数(api)
     Args:
         pro_id ([type]): [description]
         api_id ([type]): [description]
         data ([type]): [description]
     """
     target_variable = Variable.get_variable_list(pro_id, api_id)
+    if len(target_variable):
+        for i in target_variable:
+            if i['name'] in data[0]['out']:
+                Variable.update_variable_status(i["id"], 1, data[0]['out'][i['name']], i['name'])
+
+
+def update_case_persistence(pro_id, case_id, data):
+    """[summary]
+    更新持久化的参数(case)
+    Args:
+        pro_id ([type]): [description]
+        api_id ([type]): [description]
+        data ([type]): [description]
+    """
+    target_variable = Variable.get_variable_list(pro_id=pro_id, case_id=case_id)
     if len(target_variable):
         for i in target_variable:
             if i['name'] in data[0]['out']:
@@ -98,4 +113,4 @@ def add_persistence_by_api(pro_id, data):
                             i['request']['data'].update({d_key: eval(_persistence_detail['data'])})
                         except Exception:
                             i['request']['data'].update({d_key: _persistence_detail['data']})
-    print('--------------->',data)
+

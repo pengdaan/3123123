@@ -59,11 +59,11 @@ def verify_refresh_token(token):
     except jwt.ExpiredSignatureError:
         # token有效时间判断
         User.update_user_status(token, 0)
-        raise AuthFailed(data="Token has expired", responseCode=2001)
+        raise AuthFailed(data="Token 已过期", responseCode=2001)
     except jwt.InvalidTokenError:
         # token是否正确判断
         User.update_user_status(token, 0)
-        raise AuthFailed(data="Error token", responseCode=2002)
+        raise AuthFailed(data="Token 错误", responseCode=2002)
 
 
 def auth_jwt(func):
@@ -72,12 +72,12 @@ def auth_jwt(func):
         token = request.headers.get("Token")
         User.query.filter_by(token=token).first_or_404("token")
         if not token:
-            raise AuthFailed(msg="Token has expired", responseCode=2001)
+            raise AuthFailed(msg="Token 已过期", responseCode=2001)
         else:
             user = verify_refresh_token(token)
             UserList = User.get_login_user_list(status=1)
             if user["user_id"] not in UserList:
-                raise AuthFailed(msg="User does not exist", responseCode=2003)
+                raise AuthFailed(msg="用户不存在", responseCode=2003)
             else:
                 return func(*args, **kwargs)
 

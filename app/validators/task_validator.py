@@ -15,7 +15,7 @@ from app.validators.base_validator import BaseForm as Form
 
 
 class TaskForm(Form):
-    robort = StringField()
+    robot = StringField()
 
 
 class addTaskForm(TaskForm):

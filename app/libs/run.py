@@ -26,7 +26,7 @@ import yaml
 from app.libs.httprunner.api import HttpRunner
 from app.libs.httprunner.parser import ERROR
 from app.libs.httprunner.testsuites import add_testsuites
-from app.libs.variable import get_all_key_by_dict, update_all_key_by_dict, update_list, update_project_persistence, add_persistence_by_api
+from app.libs.variable import get_all_key_by_dict, update_all_key_by_dict, update_list, update_project_persistence, add_persistence_by_api, update_case_persistence
 from app.models.config import Config
 from app.models.hook import Hook
 from app.libs.api_build import header
@@ -313,10 +313,12 @@ def debug_api(
             in_out = runner.get_vars_out()
             if run_type == 1:
                 # case运行模式的debug模式
+                update_case_persistence(project, case_id, in_out)
                 summary = luna_summary.apis_result(runner._summary, in_out)
                 return summary
             else:
                 # case运行模式的case
+                update_case_persistence(project, case_id, in_out)
                 summary = luna_summary.parse_summary(runner._summary)
                 return luna_summary.save_summary(
                     name=name, summary=summary, project=project, executor=executor

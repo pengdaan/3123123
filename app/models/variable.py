@@ -9,7 +9,6 @@
 '''
 
 from sqlalchemy import text
-from flask_sqlalchemy import orm
 from app.models.base import Base, db
 from app.models.module import Module
 from app.models.case import Case
@@ -67,7 +66,7 @@ class Variable(Base):
             res = Variable.query.filter_by(pro_id=pro_id, status=1).all()
         for i in res:
             variable = {}
-            variable.update({"id": i.id, "name": i.name, "api_id": i.api_id, "module_id": i.module_id, "case_id": i.case_id, "case_module_id": i.case_module_id, "data": i.data})
+            variable.update({"id": i.id, "name": i.name, "pro_id": i.pro_id, "api_id": i.api_id, "module_id": i.module_id, "case_id": i.case_id, "case_module_id": i.case_module_id, "data": i.data})
             variable_list.append(variable)
         return variable_list
 
