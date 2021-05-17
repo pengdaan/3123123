@@ -42,6 +42,14 @@ def create_app(config_name=None):
     app.jinja_env.filters["convert_json"] = Helper.convert_json
     # 查询时会显示原始SQL语句
     # app.config['SQLALCHEMY_ECHO'] = True
+    # 连接池自动回收连接的秒数
+    app.config['SQLALCHEMY_POOL_RECYCLE'] = 90
+    # 数据库连接池的超时时间
+    app.config['SQLALCHEMY_POOL_TIMEOUT'] = 900
+    # 数据库连接池的大小
+    app.config['SQLALCHEMY_POOL_SIZE'] = 1000
+    # 控制在连接池达到最大值后可以创建的连接数。
+    app.config['SQLALCHEMY_MAX_OVERFLOW'] = 5
     # 支持跨域
     CORS(app, supports_credentials=True)
     app.config.from_object(config[config_name])

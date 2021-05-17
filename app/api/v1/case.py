@@ -457,10 +457,10 @@ def update_setups():
     return Sucess()
 
 
-@socketio.on("connect", namespace="/test")
+@socketio.on("connect", namespace="/ws")
 def test_connect():
     # sid = request.sid
-    socketio.emit("server_response", {"data": "socket连接成功."}, namespace="/test")
+    socketio.emit("server_response", {"data": "socket连接成功."}, namespace="/ws")
 
 
 @socketio.on_error_default
@@ -472,7 +472,7 @@ def default_error_handler(e):
     # print(request.event["args"])  # (data,)
 
 
-@socketio.on("run", namespace="/test")
+@socketio.on("run", namespace="/ws")
 def case_run_by_socket(req):
     executor = req["user_id"] if req["user_id"] != "" else None
     caseDetail = Case_Detail.get_case_detail(req["case_id"])
@@ -519,7 +519,7 @@ def case_run_by_socket(req):
                 socketio.emit(
                     "server_response",
                     {"code": 0, "data": result_data, "msg": "Report添加成功"},
-                    namespace="/test",
+                    namespace="/ws",
                 )
             else:
                 socketio.emit(
@@ -529,7 +529,7 @@ def case_run_by_socket(req):
                         "data": {"summary": summary["msg"], "case_id": req["case_id"]},
                         "msg": "Case运行错误: " + summary["msg"],
                     },
-                    namespace="/test",
+                    namespace="/ws",
                 )
                 exit()
         else:
@@ -540,7 +540,7 @@ def case_run_by_socket(req):
                     "data": {"summary": "", "case_id": req["case_id"]},
                     "msg": "该配置不存在",
                 },
-                namespace="/test",
+                namespace="/ws",
             )
     else:
         socketio.emit(
@@ -550,7 +550,7 @@ def case_run_by_socket(req):
                 "data": {"summary": "", "case_id": req["case_id"]},
                 "msg": "Case不存在用例",
             },
-            namespace="/test",
+            namespace="/ws",
         )
 
 

@@ -17,7 +17,7 @@ from app.models.base import Base, db
 class Category(Base):
     __tablename__ = "category"
     id = db.Column(db.Integer, primary_key=True, comment="id")
-    category_name = db.Column(db.String(255), nullable=False, comment="分类名称")
+    category_name = db.Column(db.String(255), nullable=False, comment="分类名称",index=True)
     desc = db.Column(db.String(255), nullable=True, comment="分类描述")
     pro_id = db.Column(db.Integer, db.ForeignKey("project.id", ondelete="CASCADE"))
     __table_args__ = (db.UniqueConstraint("category_name", "pro_id"),)

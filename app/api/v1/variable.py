@@ -13,7 +13,8 @@ from app.libs.code import Sucess, Fail
 from app.libs.redprint import Redprint
 from app.models.variable import Variable
 from app.validators.variable_validator import AddVariableForm, UpdateVariableForm, VariableListForm, DelVariableListForm
-
+from flask import send_from_directory
+import os
 api = Redprint("variable")
 
 
@@ -61,3 +62,8 @@ def del_variable():
     else:
         Variable.del_variable(res.variable_id.data)
         return Sucess()
+
+
+@api.route('/download', methods=["POST"])
+def variable_dowload():
+    return send_from_directory(os.getcwd() + '/templates/', 'sample.xlsx', as_attachment=True)

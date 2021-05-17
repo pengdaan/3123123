@@ -21,7 +21,7 @@ from app.models.hook import Hook
 class Project(Base):
     __tablename__ = "project"
     id = db.Column(db.Integer, primary_key=True, comment="id")
-    project_name = db.Column(db.String(255), nullable=False, comment="项目名称")
+    project_name = db.Column(db.String(255), nullable=False, comment="项目名称",index=True)
     desc = db.Column(db.String(255), nullable=True, comment="项目描述")
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
     # relationship 连表查询， backref[1对多]
