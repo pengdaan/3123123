@@ -8,6 +8,7 @@
 @版本        :1.0
 """
 from app.models.variable import Variable
+import re
 
 
 def get_all_key_by_dict(data):
@@ -76,41 +77,74 @@ def add_persistence_by_api(pro_id, data):
         if 'headers' in i['request']:
             for h_key, h_value in i['request']['headers'].items():
                 if "Per" in str(h_value):
-                    _persistence = str(h_value).replace('Per_', '')
-                    _persistence_detail = Variable.get_variable_detail(pro_id, _persistence)
-                    if 'data' in _persistence_detail and _persistence_detail['data']:
-                        try:
-                            i['request']['headers'].update({h_key: eval(_persistence_detail['data'])})
-                        except Exception:
-                            i['request']['headers'].update({h_key: _persistence_detail['data']})
+                    perlist = re.findall(r"{Per_(.*)}", str(h_value))
+                    if len(perlist):
+                        if isinstance(perlist, list):
+                            for index, value in enumerate(perlist):
+                                _persistence_detail = Variable.get_variable_detail(pro_id, value)
+                                if 'data' in _persistence_detail and _persistence_detail['data']:
+                                    tagert = "Per_{0}".format(value)
+                                    i['request']['headers'][h_key] = str(h_value).replace('{' + tagert + '}', _persistence_detail['data'])
+                    # _persistence = str(h_value).replace('Per_', '')
+                    # _persistence_detail = Variable.get_variable_detail(pro_id, _persistence)     
+                    # if 'data' in _persistence_detail and _persistence_detail['data']:
+                    #     try:
+                    #         i['request']['headers'].update({h_key: eval(_persistence_detail['data'])})
+                    #     except Exception:
+                    #         i['request']['headers'].update({h_key: _persistence_detail['data']})
         if 'json' in i['request']:
             for j_key, j_value in i['request']['json'].items():
                 if "Per" in str(j_value):
-                    _persistence = str(j_value).replace('Per_', '')
-                    _persistence_detail = Variable.get_variable_detail(pro_id, _persistence)
-                    if 'data' in _persistence_detail and _persistence_detail['data']:
-                        try:
-                            i['request']['json'].update({j_key: eval(_persistence_detail['data'])})
-                        except Exception:
-                            i['request']['json'].update({j_key: _persistence_detail['data']})
+                    perlist = re.findall(r"{Per_(.*)}", str(j_value))
+                    if len(perlist):
+                        if isinstance(perlist, list):
+                            for index, value in enumerate(perlist):
+                                _persistence_detail = Variable.get_variable_detail(pro_id, value)
+                                if 'data' in _persistence_detail and _persistence_detail['data']:
+                                    tagert = "Per_{0}".format(value)
+                                    i['request']['json'][j_key] = str(j_value).replace('{' + tagert + '}', _persistence_detail['data'])
+
+                    # _persistence = str(j_value).replace('Per_', '')
+                    # _persistence_detail = Variable.get_variable_detail(pro_id, _persistence)
+                    # if 'data' in _persistence_detail and _persistence_detail['data']:
+                    #     try:
+                    #         i['request']['json'].update({j_key: eval(_persistence_detail['data'])})
+                    #     except Exception:
+                    #         i['request']['json'].update({j_key: _persistence_detail['data']})
         if 'params' in i['request']:
             for p_key, p_value in i['request']['params'].items():
                 if "Per" in str(p_value):
-                    _persistence = str(p_value).replace('Per_', '')
-                    _persistence_detail = Variable.get_variable_detail(pro_id, _persistence)
-                    if 'data' in _persistence_detail and _persistence_detail['data']:
-                        try:
-                            i['request']['params'].update({p_key: eval(_persistence_detail['data'])})
-                        except Exception:
-                            i['request']['params'].update({p_key: _persistence_detail['data']})
+                    perlist = re.findall(r"{Per_(.*)}", str(p_value))
+                    if len(perlist):
+                        if isinstance(perlist, list):
+                            for index, value in enumerate(perlist):
+                                _persistence_detail = Variable.get_variable_detail(pro_id, value)
+                                if 'data' in _persistence_detail and _persistence_detail['data']:
+                                    tagert = "Per_{0}".format(value)
+                                    i['request']['params'][p_key] = str(p_value).replace('{' + tagert + '}', _persistence_detail['data'])
+                    # _persistence = str(p_value).replace('Per_', '')
+                    # _persistence_detail = Variable.get_variable_detail(pro_id, _persistence)
+                    # if 'data' in _persistence_detail and _persistence_detail['data']:
+                    #     try:
+                    #         i['request']['params'].update({p_key: eval(_persistence_detail['data'])})
+                    #     except Exception:
+                    #         i['request']['params'].update({p_key: _persistence_detail['data']})
         if 'data' in i['request']:
             for d_key, d_value in i['request']['data'].items():
                 if "Per" in str(d_value):
-                    _persistence = str(d_value).replace('Per_', '')
-                    _persistence_detail = Variable.get_variable_detail(pro_id, _persistence)
-                    if 'data' in _persistence_detail and _persistence_detail['data']:
-                        try:
-                            i['request']['data'].update({d_key: eval(_persistence_detail['data'])})
-                        except Exception:
-                            i['request']['data'].update({d_key: _persistence_detail['data']})
+                    perlist = re.findall(r"{Per_(.*)}", str(d_value))
+                    if len(perlist):
+                        if isinstance(perlist, list):
+                            for index, value in enumerate(perlist):
+                                _persistence_detail = Variable.get_variable_detail(pro_id, value)
+                                if 'data' in _persistence_detail and _persistence_detail['data']:
+                                    tagert = "Per_{0}".format(value)
+                                    i['request']['data'][d_key] = str(d_value).replace('{' + tagert + '}', _persistence_detail['data'])
+                    # _persistence = str(d_value).replace('Per_', '')
+                    # _persistence_detail = Variable.get_variable_detail(pro_id, _persistence)
+                    # if 'data' in _persistence_detail and _persistence_detail['data']:
+                    #     try:
+                    #         i['request']['data'].update({d_key: eval(_persistence_detail['data'])})
+                    #     except Exception:
+                    #         i['request']['data'].update({d_key: _persistence_detail['data']})
 

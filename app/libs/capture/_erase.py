@@ -90,7 +90,7 @@ def _api_json(name, url, method, headers, _dheaders, params, _dparams, body):
         if body[0] == "{}":
             _request.Base_Json_Data_Request["request"]["json"] = {}
         else:
-            api_body = body[0].replace('\\', '').replace('n','').replace(' ','')
+            api_body = body[0].replace('\\', '').replace(' ', '')
             try:
                 _request.Base_Json_Data_Request["request"]["json"] = json.loads(api_body)
             except Exception:
